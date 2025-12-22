@@ -1,5 +1,7 @@
 using System.Text;
+using System.Text.Json;
 using Application;
+using Application.Common;
 using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,6 +34,9 @@ var connectionString = builder.Configuration.GetConnectionString("CoreConnection
 builder.Services.AddDbContext<CoreDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// Map the ICoreDbContext interface to the CoreDbContext implementation so MediatR handlers can resolve it
+builder.Services.AddScoped<ICoreDbContext>(provider => provider.GetRequiredService<CoreDbContext>());
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(configuration);
@@ -41,12 +46,40 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Global exception handling middleware
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (NotFoundException nfEx)
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        context.Response.ContentType = "application/json";
+        var payload = JsonSerializer.Serialize(new { Status = "NotFound", Message = nfEx.Message });
+        await context.Response.WriteAsync(payload);
+    }
+    catch (Exception ex)
+    {
+        var logger = context.RequestServices.GetService<ILogger<Program>>();
+        logger?.LogError(ex, "Unhandled exception occurred while processing request.");
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        var payload = JsonSerializer.Serialize(new { Status = "Error", Message = "An internal server error occurred." });
+        await context.Response.WriteAsync(payload);
+    }
+});
+
+// Ensure database is created / migrations are applied on startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<CoreDbContext>();
+        // Applies any pending migrations for the context to the database.
+        // Will create the database if it does not already exist.
         context.Database.Migrate();
     }
     catch (Exception ex)
