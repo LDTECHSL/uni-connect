@@ -36,6 +36,7 @@ builder.Services.AddDbContext<CoreDbContext>(options =>
 
 // Map the ICoreDbContext interface to the CoreDbContext implementation so MediatR handlers can resolve it
 builder.Services.AddScoped<ICoreDbContext>(provider => provider.GetRequiredService<CoreDbContext>());
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
@@ -78,9 +79,16 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<CoreDbContext>();
-        // Applies any pending migrations for the context to the database.
+        // Applies any pending migrations for the CoreDbContext to the database.
         // Will create the database if it does not already exist.
         context.Database.Migrate();
+
+        // Apply migrations for ApplicationDbContext if it is registered
+        var appContext = services.GetService<ApplicationDbContext>();
+        if (appContext != null)
+        {
+            appContext.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {
