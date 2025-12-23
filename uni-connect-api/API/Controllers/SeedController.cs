@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Core;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace API.Controllers;
 
@@ -49,11 +50,19 @@ public class SeedController : ControllerBase
 
             for (int i = 0; i < sampleEmails.Length; i++)
             {
+                // Build a readable name from the email local part (e.g. "alice.smith" -> "Alice Smith")
+                var localPart = sampleEmails[i].Split('@')[0];
+                var nameParts = localPart.Split('.', '_');
+                var displayName = string.Join(" ", nameParts.Select(p => string.IsNullOrWhiteSpace(p) ? p : char.ToUpper(p[0]) + p.Substring(1)));
+
                 users.Add(new CoreUsers
                 {
                     Email = sampleEmails[i],
+                    Username = displayName,
                     // Alternate types so both Student and Instructor records are created
-                    UserType = ((i + 1) % 2 == 0) ? UserTypes.Student : UserTypes.Instructor
+                    UserType = ((i + 1) % 2 == 0) ? UserTypes.Student : UserTypes.Instructor,
+                    // Alternate genders so the seeded data has both Male and Female values
+                    Gender = (i % 2 == 0) ? "Female" : "Male"
                 });
             }
 
