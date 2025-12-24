@@ -1,8 +1,12 @@
-﻿using Application.Auth.Queries.GetCoreUser;
+﻿using Application.Auth.Commands.CreateUser;
+using Application.Auth.Commands.Login;
+using Application.Auth.Queries.GetCoreUser;
 using Application.Auth.Queries.GetUser;
 using Application.Common;
 using MediatR;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -55,6 +59,31 @@ public class AuthController : ControllerBase
         };
         
         var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterUser([FromBody] CreateUserDto userData)
+    {
+        var command = new CreateUser
+        {
+            Data = userData
+        };
+
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginRequest)
+    {
+        var command = new Login()
+        {
+             LoginDto = loginRequest
+        };
+        
+        var result = await _mediator.Send(command);
+
         return Ok(result);
     }
 }
