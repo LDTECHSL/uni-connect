@@ -21,7 +21,7 @@
 	height: 100vh;
 	border: 1px solid var(--border);
 	border-radius: 0;
-	background-color: rgba(249, 238, 223, 0.9);
+	background-color: rgba(252, 249, 245, 0.9);
 	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px);
 	box-shadow: 0 28px 80px color-mix(in srgb, var(--fg) 22%, transparent);
