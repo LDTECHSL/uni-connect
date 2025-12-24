@@ -14,28 +14,36 @@
 	--radius-sm: 6px;
 	--radius-md: 10px;
 
-	/* Colors (neutral defaults) */
-	--bg: #ffffff;
-	--fg: #111827;
-	--muted: #6b7280;
-	--border: #e5e7eb;
-	--surface: #f9fafb;
+	/* Theme (orange + black) */
+	--bg: #fff7ed;
+	--fg: #0a0a0a;
+	--muted: #6b5e55;
+	--border: #f2d5b1;
+	--surface: #fffaf3;
+
+	--brand: #f97316;
+	--brand-contrast: #0a0a0a;
+	--brand-soft: color-mix(in srgb, var(--brand) 18%, transparent);
 
 	/* Focus */
-	--focus-ring: #2563eb;
+	--focus-ring: var(--brand);
 
 	color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #0b1220;
-		--fg: #e5e7eb;
-		--muted: #9ca3af;
-		--border: #243041;
-		--surface: #101a2a;
+		--bg: #070707;
+		--fg: #fff7ed;
+		--muted: #b6a89f;
+		--border: #2a2a2a;
+		--surface: #111111;
 
-		--focus-ring: #60a5fa;
+		--brand: #fb923c;
+		--brand-contrast: #070707;
+		--brand-soft: color-mix(in srgb, var(--brand) 18%, transparent);
+
+		--focus-ring: var(--brand);
 
 		color-scheme: dark;
 	}
