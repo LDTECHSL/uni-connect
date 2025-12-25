@@ -20,7 +20,16 @@ public class GetUserHandler (IApplicationDbContext dbContext) : IRequestHandler<
         {
             throw new NotFoundException("User not found");
         }
+        
+        var result = new
+        {
+            user.Id,
+            user.Email,
+            UserTypeName = user.UserType?.ToString(),
+            user.Username,
+            user.Gender
+        };
 
-        return user;
+        return result;
     }
 }

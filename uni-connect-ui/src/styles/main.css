@@ -130,6 +130,25 @@
 	color: color-mix(in srgb, var(--muted) 90%, transparent);
 }
 
+.inputRightBtn {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 10px;
+	border: 0;
+	background: transparent;
+	color: color-mix(in srgb, var(--muted) 90%, transparent);
+}
+
+.inputRightBtn:hover {
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
 .input {
 	width: 100%;
 	height: 44px;
@@ -138,6 +157,10 @@
 	/* background: color-mix(in srgb, var(--bg) 100%, transparent); */
 	padding: 0 12px 0 40px;
 	outline: none;
+}
+
+.input.hasRightIcon {
+	padding-right: 44px;
 }
 
 .input::placeholder {

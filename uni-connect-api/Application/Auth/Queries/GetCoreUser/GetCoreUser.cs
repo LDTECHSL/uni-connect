@@ -33,7 +33,9 @@ public class GetCoreUserHandler : IRequestHandler<GetCoreUser, object>
         {
             coreUser.Id,
             coreUser.Email,
-            UserTypeName = coreUser.UserType?.ToString()
+            UserTypeName = coreUser.UserType?.ToString(),
+            coreUser.Username,
+            coreUser.Gender
         };
 
         return result;

@@ -20,3 +20,12 @@ export const GetCoreUserByEmail = async (email: string) => {
         throw error;
     }
 }
+
+export const createUser = async (userData: any) => {
+    try {
+        const response = await axios.post(`${API_URL}/register`, userData);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
