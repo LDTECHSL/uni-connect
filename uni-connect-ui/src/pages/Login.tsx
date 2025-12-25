@@ -1,5 +1,7 @@
 import '../styles/main.css'
 import logo from "../assets/uni-connect-sm.png"
+import { getUserByEmail } from '../services/auth-api'
+import React from 'react'
 
 function IconMail(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -23,6 +25,20 @@ function IconArrowRight(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
+const [email, setEmail] = React.useState("");
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    const response = await getUserByEmail(email);
+    console.log(response);    
+  } catch (error) {
+    console.error(error);    
+  }
+
+}
+
 export default function Login() {
   return (
     <div className="loginShell">
@@ -37,7 +53,7 @@ export default function Login() {
             Already have an account? <a href="#login">Login</a>
           </p>
 
-          <form className="form" onSubmit={(e) => e.preventDefault()}>
+          <form className="form" onSubmit={handleSubmit}>
             <label className="fieldLabel" htmlFor="email">
               Email Address
             </label>
@@ -47,6 +63,8 @@ export default function Login() {
               </span>
               <input
                 className="input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 type="email"
                 autoComplete="email"
