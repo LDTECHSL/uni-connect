@@ -1,6 +1,6 @@
 import '../styles/main.css'
 import logo from "../assets/uni-connect-sm.png"
-import { createUser, GetCoreUserByEmail, getUserByEmail } from '../services/auth-api'
+import { createUser, GetCoreUserByEmail, getUserByEmail, loginUser } from '../services/auth-api'
 import React from 'react'
 import { showError, showSuccess } from '../components/Toast'
 
@@ -62,6 +62,7 @@ function IconEyeOff(props: React.SVGProps<SVGSVGElement>) {
 export default function Login() {
     const [email, setEmail] = React.useState("");
     const [isOpenPasswordFields, setIsOpenPasswordFields] = React.useState(false);
+    const [isLoginMode, setIsLoginMode] = React.useState(false);
     const [user, setUser] = React.useState<any>(null);
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -73,8 +74,11 @@ export default function Login() {
 
         try {
             const response = await getUserByEmail(email);
-            console.log(response);
+            showSuccess("User already exists. Please login.");
+            setUser(response.data);
+            setIsLoginMode(true);
         } catch (error: any) {
+            setIsLoginMode(false);
             if (error.response.data.Message === "User not found") {
                 handleGetCoreUser(email);
             }
@@ -111,7 +115,7 @@ export default function Login() {
         }
 
         console.log(user);
-        
+
 
         const userData = {
             email: email,
@@ -124,11 +128,36 @@ export default function Login() {
         try {
             const response = await createUser(userData);
             console.log(response);
-			showSuccess('Account created successfully.');
+            showSuccess('Account created successfully.');
+            setIsLoginMode(true);
         } catch (error: any) {
+            setIsLoginMode(false);
             showError(error.response.data.Message || "An error occurred while creating the user.");
         }
     }
+
+    const handleLoginUser = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!email || !password) {
+            showError('Please enter your email and password.');
+            return;
+        }
+
+        const loginData = {
+            email: email,
+            password: password,
+        };
+
+        try {
+            const response = await loginUser(loginData);
+            console.log(response);
+            showSuccess('Logged in successfully.');
+            
+        } catch (error: any) {
+            showError(error.response.data.Message || "An error occurred while logging in.");
+        }
+    };
 
     return (
         <div className="loginShell">
@@ -137,105 +166,169 @@ export default function Login() {
                     <img className='logo' src={logo} alt="UniConnect logo" />
                 </header>
 
-                <div className="loginBody">
-                    <h1 className="loginTitle">CREATE YOUR PROFILE</h1>
-                    <p className="loginSub">
-                        Already have an account? <a href="#login">Login</a>
-                    </p>
+                {!isLoginMode && (
+                    <div className="loginBody">
+                        <h1 className="loginTitle">CREATE YOUR PROFILE</h1>
+                        <p className="loginSub">
+                            Already have an account? <a onClick={()=> setIsLoginMode(true)}>Login</a>
+                        </p>
 
-                    <form
-                        className="form"
-                        onSubmit={(e) => (isOpenPasswordFields ? handleCreateUser(e) : handleSubmit(e))}
-                    >
-                        <label className="fieldLabel" htmlFor="email">
-                            Email Address
-                        </label>
-                        <div className="inputWrap">
-                            <span className="inputIcon" aria-hidden="true">
-                                <IconMail />
-                            </span>
-                            <input
-                                className="input"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                id="email"
-                                type="email"
-                                autoComplete="email"
-                                placeholder="Enter your email address"
-                                required
-                            />
-                        </div>
+                        <form
+                            className="form"
+                            onSubmit={(e) => (isOpenPasswordFields ? handleCreateUser(e) : handleSubmit(e))}
+                        >
+                            <label className="fieldLabel" htmlFor="email">
+                                Email Address
+                            </label>
+                            <div className="inputWrap">
+                                <span className="inputIcon" aria-hidden="true">
+                                    <IconMail />
+                                </span>
+                                <input
+                                    className="input"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    id="email"
+                                    type="email"
+                                    autoComplete="email"
+                                    placeholder="Enter your email address"
+                                    required
+                                />
+                            </div>
 
-                        {isOpenPasswordFields && (
-                            <>
-                                <label className="fieldLabel" htmlFor="password">
-                                    Password
-                                </label>
-                                <div className="inputWrap">
-                                    <span className="inputIcon" aria-hidden="true">
-                                        <IconLock />
-                                    </span>
-                                    <input
-                                        className="input hasRightIcon"
-                                        id="password"
-                                        type={showPassword ? 'text' : 'password'}
-                                        autoComplete="current-password"
-                                        placeholder="Enter your password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        className="inputRightBtn"
-                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                        onClick={() => setShowPassword((v) => !v)}
-                                    >
-                                        {showPassword ? <IconEyeOff /> : <IconEye />}
-                                    </button>
-                                </div>
-                                <label className="fieldLabel" htmlFor="confirmPassword">
-                                    Confirm Password
-                                </label>
-                                <div className="inputWrap">
-                                    <span className="inputIcon" aria-hidden="true">
-                                        <IconLock />
-                                    </span>
-                                    <input
-                                        className="input hasRightIcon"
-                                        id="confirmPassword"
-                                        type={showConfirmPassword ? 'text' : 'password'}
-                                        autoComplete="current-password"
-                                        placeholder="Confirm your password"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        className="inputRightBtn"
-                                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                                        onClick={() => setShowConfirmPassword((v) => !v)}
-                                    >
-                                        {showConfirmPassword ? <IconEyeOff /> : <IconEye />}
-                                    </button>
-                                </div>
-                            </>
-                        )}
+                            {isOpenPasswordFields && (
+                                <>
+                                    <label className="fieldLabel" htmlFor="password">
+                                        Password
+                                    </label>
+                                    <div className="inputWrap">
+                                        <span className="inputIcon" aria-hidden="true">
+                                            <IconLock />
+                                        </span>
+                                        <input
+                                            className="input hasRightIcon"
+                                            id="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            autoComplete="current-password"
+                                            placeholder="Enter your password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            className="inputRightBtn"
+                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                            onClick={() => setShowPassword((v) => !v)}
+                                        >
+                                            {showPassword ? <IconEyeOff /> : <IconEye />}
+                                        </button>
+                                    </div>
+                                    <label className="fieldLabel" htmlFor="confirmPassword">
+                                        Confirm Password
+                                    </label>
+                                    <div className="inputWrap">
+                                        <span className="inputIcon" aria-hidden="true">
+                                            <IconLock />
+                                        </span>
+                                        <input
+                                            className="input hasRightIcon"
+                                            id="confirmPassword"
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            autoComplete="current-password"
+                                            placeholder="Confirm your password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            className="inputRightBtn"
+                                            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                            onClick={() => setShowConfirmPassword((v) => !v)}
+                                        >
+                                            {showConfirmPassword ? <IconEyeOff /> : <IconEye />}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
 
-                        <button className="primaryBtn" type="submit">
-                            Next
-                            <span className="primaryBtnIcon" aria-hidden="true">
-                                <IconArrowRight />
-                            </span>
-                        </button>
-                    </form>
+                            <button className="primaryBtn" type="submit">
+                                Next
+                                <span className="primaryBtnIcon" aria-hidden="true">
+                                    <IconArrowRight />
+                                </span>
+                            </button>
+                        </form>
 
-                    <p className="legal">
-                        By registering, you accept UniConnect <a href="#tos">Terms</a>{' '}
-                        and <a href="#privacy">Privacy policy</a>.
-                    </p>
-                </div>
+                        <p className="legal">
+                            By registering, you accept UniConnect <a href="#tos">Terms</a>{' '}
+                            and <a href="#privacy">Privacy policy</a>.
+                        </p>
+                    </div>
+                )}
+
+                {isLoginMode && (
+                    <div className="loginBody">
+                        <h1 className="loginTitle">LOGIN TO YOUR ACCOUNT</h1>
+                        <p className="loginSub">
+                            Don't have an account? <a onClick={()=> setIsLoginMode(false)}>Create one</a>
+                        </p>
+                        <form className="form" onSubmit={handleLoginUser}>
+                            <label className="fieldLabel" htmlFor="emailLogin">
+                                Email Address
+                            </label>
+                            <div className="inputWrap">
+                                <span className="inputIcon" aria-hidden="true">
+                                    <IconMail />
+                                </span>
+                                <input
+                                    className="input"
+                                    id="emailLogin"
+                                    type="email"
+                                    autoComplete="email"
+                                    placeholder="Enter your email address"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Password input field */}
+                            <label className="fieldLabel" htmlFor="passwordLogin">
+                                Password
+                            </label>
+                            <div className="inputWrap">
+                                <span className="inputIcon" aria-hidden="true">
+                                    <IconLock />
+                                </span>
+                                <input
+                                    className="input hasRightIcon"
+                                    id="passwordLogin"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    type="password"
+                                    autoComplete="current-password"
+                                    placeholder="Enter your password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="inputRightBtn"
+                                    aria-label="Show password"
+                                >
+                                    <IconEye />
+                                </button>
+                            </div>
+                            <button className="primaryBtn" type="submit">
+                                Login
+                                <span className="primaryBtnIcon" aria-hidden="true">
+                                    <IconArrowRight />
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                )}
+
             </section>
         </div>
     )

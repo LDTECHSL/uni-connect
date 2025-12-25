@@ -57,7 +57,8 @@ public class LoginHandler (IApplicationDbContext dbContext) : IRequestHandler<Lo
             user.Id,
             user.Username,
             user.Email,
-            user.UserType
+            user.UserType,
+            Token = new JwtSecurityTokenHandler().WriteToken(token)
         };
     }
 }
