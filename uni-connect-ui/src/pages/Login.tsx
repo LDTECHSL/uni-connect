@@ -3,6 +3,7 @@ import logo from "../assets/uni-connect-sm.png"
 import { createUser, GetCoreUserByEmail, getUserByEmail, loginUser } from '../services/auth-api'
 import React from 'react'
 import { showError, showSuccess } from '../components/Toast'
+import Spinner from '../components/Spinner'
 
 function IconMail(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -68,16 +69,22 @@ export default function Login() {
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        setIsLoading(true);
         try {
             const response = await getUserByEmail(email);
-            showSuccess("User already exists. Please login.");
-            setUser(response.data);
-            setIsLoginMode(true);
+            setTimeout(() => {
+                setIsLoading(false);
+                showSuccess("User already exists. Please login.");
+                setUser(response.data);
+                setIsLoginMode(true);
+            }, 3000);
         } catch (error: any) {
+            setIsLoading(false);
             setIsLoginMode(false);
             if (error.response.data.Message === "User not found") {
                 handleGetCoreUser(email);
@@ -114,8 +121,7 @@ export default function Login() {
             return;
         }
 
-        console.log(user);
-
+        setIsLoading(true);
 
         const userData = {
             email: email,
@@ -126,11 +132,14 @@ export default function Login() {
         };
 
         try {
-            const response = await createUser(userData);
-            console.log(response);
-            showSuccess('Account created successfully.');
-            setIsLoginMode(true);
+            await createUser(userData);
+            setTimeout(() => {
+                setIsLoading(false);
+                showSuccess('Account created successfully.');
+                setIsLoginMode(true);
+            }, 3000);
         } catch (error: any) {
+            setIsLoading(false);
             setIsLoginMode(false);
             showError(error.response.data.Message || "An error occurred while creating the user.");
         }
@@ -144,23 +153,28 @@ export default function Login() {
             return;
         }
 
+        setIsLoading(true);
+
         const loginData = {
             email: email,
             password: password,
         };
 
         try {
-            const response = await loginUser(loginData);
-            console.log(response);
+            await loginUser(loginData);
+            setTimeout(() => {
+                setIsLoading(false);
             showSuccess('Logged in successfully.');
-            
+            }, 3000);
         } catch (error: any) {
+            setIsLoading(false);
             showError(error.response.data.Message || "An error occurred while logging in.");
         }
     };
 
     return (
         <div className="loginShell">
+            <Spinner isLoading={isLoading} />
             <section className="loginModal" aria-label="Create profile">
                 <header className="loginTopbar">
                     <img className='logo' src={logo} alt="UniConnect logo" />
@@ -170,7 +184,7 @@ export default function Login() {
                     <div className="loginBody">
                         <h1 className="loginTitle">CREATE YOUR PROFILE</h1>
                         <p className="loginSub">
-                            Already have an account? <a onClick={()=> setIsLoginMode(true)}>Login</a>
+                            Already have an account? <a style={{cursor: "pointer"}} onClick={() => setIsLoginMode(true)}>Login</a>
                         </p>
 
                         <form
@@ -272,7 +286,7 @@ export default function Login() {
                     <div className="loginBody">
                         <h1 className="loginTitle">LOGIN TO YOUR ACCOUNT</h1>
                         <p className="loginSub">
-                            Don't have an account? <a onClick={()=> setIsLoginMode(false)}>Create one</a>
+                            Don't have an account? <a style={{cursor: "pointer"}} onClick={() => setIsLoginMode(false)}>Create one</a>
                         </p>
                         <form className="form" onSubmit={handleLoginUser}>
                             <label className="fieldLabel" htmlFor="emailLogin">
