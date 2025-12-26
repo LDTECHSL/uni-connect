@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
-import { PowerSettingsNew } from "@mui/icons-material";
+import { Home, PowerSettingsNew } from "@mui/icons-material";
 
 type NavbarProps = {
     children?: React.ReactNode;
@@ -65,18 +65,7 @@ function IconChevronDown(props: React.SVGProps<SVGSVGElement>) {
     );
 }
 
-function IconHome(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
-            <path
-                fill="currentColor"
-                d="M12 3.2a1 1 0 0 1 .7.3l8 7.3a1 1 0 1 1-1.4 1.5l-.9-.8V20a2 2 0 0 1-2 2h-2.5a1 1 0 0 1-1-1v-5.5h-2V21a1 1 0 0 1-1 1H7.6a2 2 0 0 1-2-2v-8.5l-.9.8a1 1 0 0 1-1.4-1.5l8-7.3a1 1 0 0 1 .7-.3Z"
-            />
-        </svg>
-    );
-}
-
-const NAV_ROOT: NavLeaf[] = [{ to: "/app", icon: <IconHome />, label: "Dashboard" }];
+const NAV_ROOT: NavLeaf[] = [{ to: "/app", icon: <Home />, label: "Dashboard" }];
 
 const NAV_GROUPS: NavGroup[] = [
     // {
