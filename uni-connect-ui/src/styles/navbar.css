@@ -343,9 +343,28 @@
 	padding: 12px;
 	border-top: 1px solid var(--border);
 	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 10px;
+}
+
+.appSidebarFooterLeft {
+	display: grid;
 	grid-template-columns: 40px 1fr;
 	align-items: center;
 	gap: 10px;
+	min-width: 0;
+}
+
+.appLogoutBtn {
+	width: 40px;
+	height: 40px;
+}
+
+.material-symbols-outlined {
+	font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+	font-size: 22px;
+	line-height: 1;
 }
 
 .appAvatar {

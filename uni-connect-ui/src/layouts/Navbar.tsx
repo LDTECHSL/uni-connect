@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
+import { PowerSettingsNew } from "@mui/icons-material";
 
 type NavbarProps = {
     children?: React.ReactNode;
@@ -9,6 +10,7 @@ type NavbarProps = {
 
 type NavLeaf = {
     to: string;
+    icon: React.ReactNode;
     label: string;
 };
 
@@ -74,50 +76,28 @@ function IconHome(props: React.SVGProps<SVGSVGElement>) {
     );
 }
 
-function IconBooks(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
-            <path
-                fill="currentColor"
-                d="M5 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16a1 1 0 0 1-1.4.9L12 18.5l-5.6 2.4A1 1 0 0 1 5 20V4Zm2 0v14.5l4.6-2a1 1 0 0 1 .8 0l4.6 2V4H7Z"
-            />
-        </svg>
-    );
-}
-
-function IconUsers(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
-            <path
-                fill="currentColor"
-                d="M7.5 12a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm9 3a3 3 0 1 1 0-6 3 3 0 0 1 0 6ZM2 21a6 6 0 0 1 12 0 1 1 0 1 1-2 0 4 4 0 0 0-8 0 1 1 0 1 1-2 0Zm13 6a4.5 4.5 0 0 1 9 0 1 1 0 1 1-2 0 2.5 2.5 0 0 0-5 0 1 1 0 1 1-2 0Z"
-            />
-        </svg>
-    );
-}
-
-const NAV_ROOT: NavLeaf[] = [{ to: "/app", label: "Dashboard" }];
+const NAV_ROOT: NavLeaf[] = [{ to: "/app", icon: <IconHome />, label: "Dashboard" }];
 
 const NAV_GROUPS: NavGroup[] = [
-    {
-        id: "courses",
-        label: "Courses",
-        icon: (p) => <IconBooks {...p} />,
-        children: [
-            { to: "/app/courses/manage", label: "Manage Course" },
-            { to: "/app/courses/new", label: "Add New Course" },
-            { to: "/app/courses/category", label: "Course Category" },
-            { to: "/app/courses/coupons", label: "Coupons" },
-            { to: "/app/courses/bundle", label: "Course Bundle" },
-            { to: "/app/courses/subscriptions", label: "Subscription Reports" },
-        ],
-    },
-    {
-        id: "users",
-        label: "Users",
-        icon: (p) => <IconUsers {...p} />,
-        children: [{ to: "/app/users", label: "Users" }],
-    },
+    // {
+    //     id: "courses",
+    //     label: "Courses",
+    //     icon: (p) => <IconBooks {...p} />,
+    //     children: [
+    //         { to: "/app/courses/manage", label: "Manage Course" },
+    //         { to: "/app/courses/new", label: "Add New Course" },
+    //         { to: "/app/courses/category", label: "Course Category" },
+    //         { to: "/app/courses/coupons", label: "Coupons" },
+    //         { to: "/app/courses/bundle", label: "Course Bundle" },
+    //         { to: "/app/courses/subscriptions", label: "Subscription Reports" },
+    //     ],
+    // },
+    // {
+    //     id: "users",
+    //     label: "Users",
+    //     icon: (p) => <IconUsers {...p} />,
+    //     children: [{ to: "/app/users", label: "Users" }],
+    // },
 ];
 
 function isPathInGroup(pathname: string, group: NavGroup) {
@@ -173,6 +153,16 @@ export default function Navbar({ children }: NavbarProps) {
 
     const content = children ?? <Outlet />;
 
+    const handleLogout = () => {
+        setIsMobileOpen(false);
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        navigate("/");
+    };
+
     return (
         <div className="appFrame">
             <div
@@ -227,7 +217,7 @@ export default function Navbar({ children }: NavbarProps) {
                                 onClick={() => setIsMobileOpen(false)}
                             >
                                 <span className="appNavIcon" aria-hidden="true">
-                                    <IconHome />
+                                    {leaf.icon}
                                 </span>
                                 <span className="appNavLabel">{leaf.label}</span>
                             </NavLink>
@@ -290,13 +280,25 @@ export default function Navbar({ children }: NavbarProps) {
                 </nav>
 
                 <div className="appSidebarFooter" aria-label="Sidebar footer">
-                    <div className="appAvatar" aria-hidden="true">
-                        <span className="appAvatarText">U</span>
+                    <div className="appSidebarFooterLeft">
+                        <div className="appAvatar" aria-hidden="true">
+                            <span className="appAvatarText">U</span>
+                        </div>
+                        <div className="appUserMeta">
+                            <div className="appUserName">User</div>
+                            <div className="appUserRole">Admin</div>
+                        </div>
                     </div>
-                    <div className="appUserMeta">
-                        <div className="appUserName">User</div>
-                        <div className="appUserRole">Admin</div>
-                    </div>
+
+                    <button
+                        type="button"
+                        className="appIconBtn appLogoutBtn"
+                        aria-label="Logout"
+                        title="Logout"
+                        onClick={handleLogout}
+                    >
+                        <PowerSettingsNew />
+                    </button>
                 </div>
             </aside>
 
