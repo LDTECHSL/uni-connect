@@ -1,0 +1,239 @@
+/* App layout (sidebar + topbar + content)
+   Uses existing theme CSS variables from src/index.css
+*/
+
+.appFrame {
+	min-height: 100vh;
+	display: flex;
+	background: var(--bg);
+	color: var(--fg);
+}
+
+/* Sidebar */
+.appSidebar {
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	width: 280px;
+	flex: 0 0 280px;
+	border-right: 1px solid var(--border);
+	background: var(--surface);
+	display: flex;
+	flex-direction: column;
+	z-index: 20;
+	transition: width 160ms ease, transform 160ms ease;
+}
+
+.appSidebarCollapsed {
+	width: 76px;
+	flex-basis: 76px;
+}
+
+.appSidebarHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 14px 12px;
+	border-bottom: 1px solid var(--border);
+}
+
+.appBrand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.appBrandMark {
+	width: 22px;
+	height: 22px;
+	border-radius: 8px;
+	border: 1px solid var(--border);
+	background: var(--brand-soft);
+}
+
+.appBrandText {
+	font-weight: 800;
+	letter-spacing: -0.2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.appIconBtn {
+	display: inline-grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 10px;
+	border: 1px solid var(--border);
+	background: transparent;
+	color: var(--fg);
+}
+
+.appIconBtn:hover {
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
+.appNav {
+	padding: 10px;
+	display: grid;
+	gap: 6px;
+}
+
+.appNavLink {
+	display: grid;
+	grid-template-columns: 40px 1fr;
+	align-items: center;
+	gap: 8px;
+	height: 42px;
+	padding: 0 10px;
+	border-radius: 12px;
+	text-decoration: none;
+	color: var(--fg);
+	border: 1px solid transparent;
+}
+
+.appNavLink:hover {
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	text-decoration: none;
+}
+
+.appNavLinkActive {
+	border-color: var(--border);
+	background: var(--brand-soft);
+}
+
+.appNavIcon {
+	display: inline-grid;
+	place-items: center;
+	width: 40px;
+	height: 40px;
+	color: color-mix(in srgb, var(--fg) 92%, transparent);
+}
+
+.appNavLabel {
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Collapse behaviors */
+.appSidebarCollapsed .appBrandText {
+	display: none;
+}
+
+.appSidebarCollapsed .appNavLink {
+	grid-template-columns: 1fr;
+	justify-items: center;
+	padding: 0;
+}
+
+.appSidebarCollapsed .appNavLabel {
+	display: none;
+}
+
+.appSidebarCollapsed .appCollapseBtn {
+	transform: translateX(-2px);
+}
+
+/* Main area */
+.appMain {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.appTopbar {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	height: 56px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 0 14px;
+	border-bottom: 1px solid var(--border);
+	background: var(--surface);
+}
+
+.appTopbarTitle {
+	font-weight: 800;
+	letter-spacing: -0.2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.appContent {
+	padding: 16px;
+}
+
+/* Basic page container (for placeholder pages) */
+.appPage {
+	max-width: 1100px;
+	margin: 0 auto;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: var(--surface);
+	padding: 16px;
+}
+
+.appPageTitle {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 900;
+	letter-spacing: -0.3px;
+}
+
+.appPageSub {
+	margin: 8px 0 0;
+	color: var(--muted);
+	font-size: var(--text-sm);
+}
+
+/* Mobile/off-canvas */
+.appOverlay {
+	display: none;
+}
+
+.appMobileMenuBtn {
+	display: none;
+}
+
+@media (max-width: 900px) {
+	.appSidebar {
+		position: fixed;
+		left: 0;
+		top: 0;
+		transform: translateX(-102%);
+		box-shadow: 0 28px 80px color-mix(in srgb, var(--fg) 22%, transparent);
+	}
+
+	.appSidebarMobileOpen {
+		transform: translateX(0);
+	}
+
+	.appOverlay {
+		position: fixed;
+		inset: 0;
+		background: color-mix(in srgb, var(--fg) 38%, transparent);
+		display: block;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 160ms ease;
+		z-index: 15;
+	}
+
+	.appOverlayOpen {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.appMobileMenuBtn {
+		display: inline-grid;
+	}
+}

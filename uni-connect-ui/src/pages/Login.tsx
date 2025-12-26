@@ -4,6 +4,7 @@ import { createUser, GetCoreUserByEmail, getUserByEmail, loginUser } from '../se
 import React from 'react'
 import { showError, showSuccess } from '../components/Toast'
 import Spinner from '../components/Spinner'
+import { useNavigate } from 'react-router-dom'
 
 function IconMail(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -70,6 +71,8 @@ export default function Login() {
     const [showPassword, setShowPassword] = React.useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -164,7 +167,8 @@ export default function Login() {
             await loginUser(loginData);
             setTimeout(() => {
                 setIsLoading(false);
-            showSuccess('Logged in successfully.');
+                showSuccess('Logged in successfully.');
+                navigate('/app');
             }, 3000);
         } catch (error: any) {
             setIsLoading(false);
