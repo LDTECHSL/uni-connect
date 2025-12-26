@@ -17,7 +17,8 @@
 	width: 280px;
 	flex: 0 0 280px;
 	border-right: 1px solid var(--border);
-	background: var(--surface);
+	/* background: color-mix(in srgb, var(--fg) 6%, var(--surface)); */
+    background-color: white;
 	display: flex;
 	flex-direction: column;
 	z-index: 20;
@@ -29,13 +30,21 @@
 	flex-basis: 76px;
 }
 
+.appSidebarCollapsed .appLogoBtn {
+	display: none;
+}
+
+.appSidebarCollapsed .appSidebarHeader {
+	justify-content: flex-end;
+}
+
 .appSidebarHeader {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
 	padding: 14px 12px;
-	border-bottom: 1px solid var(--border);
+	/* border-bottom: 1px solid var(--border); */
 }
 
 .appLogoBtn {
@@ -47,17 +56,17 @@
 	margin: 0;
 	display: flex;
 	align-items: center;
-	gap: 10px;
+    justify-content: center;
 	min-width: 0;
 	cursor: pointer;
 }
 
 .appLogo {
-	width: 34px;
-	height: 34px;
+	width: 150px;
+	height: auto;
 	border-radius: 10px;
-	border: 1px solid var(--border);
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	/* border: 1px solid var(--border); */
+	/* background: color-mix(in srgb, var(--bg) 88%, transparent); */
 	object-fit: contain;
 }
 
@@ -283,7 +292,7 @@
 	gap: 12px;
 	padding: 0 14px;
 	border-bottom: 1px solid var(--border);
-	background: var(--surface);
+	background-color: white;
 }
 
 .appTopbarGrow {

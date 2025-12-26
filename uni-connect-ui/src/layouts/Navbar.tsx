@@ -200,7 +200,6 @@ export default function Navbar({ children }: NavbarProps) {
                         aria-label="Go to Dashboard"
                     >
                         <img className="appLogo" src={logo} alt="UniConnect" />
-                        <span className="appBrandText">UniConnect</span>
                     </button>
 
                     <button
@@ -312,18 +311,7 @@ export default function Navbar({ children }: NavbarProps) {
                         <IconMenu />
                     </button>
 
-                    <div className="appTopbarTitle">Manage</div>
-
                     <div className="appTopbarGrow" />
-
-                    <div className="appTopbarSearch" role="search">
-                        <input
-                            className="appSearchInput"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                        />
-                    </div>
 
                     <button type="button" className="appTopbarAvatarBtn" aria-label="Account">
                         <div className="appAvatar" aria-hidden="true">
