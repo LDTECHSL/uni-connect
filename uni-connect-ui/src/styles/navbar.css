@@ -38,19 +38,27 @@
 	border-bottom: 1px solid var(--border);
 }
 
-.appBrand {
+.appLogoBtn {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	padding: 0;
+	margin: 0;
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	min-width: 0;
+	cursor: pointer;
 }
 
-.appBrandMark {
-	width: 22px;
-	height: 22px;
-	border-radius: 8px;
+.appLogo {
+	width: 34px;
+	height: 34px;
+	border-radius: 10px;
 	border: 1px solid var(--border);
-	background: var(--brand-soft);
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	object-fit: contain;
 }
 
 .appBrandText {
@@ -78,6 +86,13 @@
 
 .appNav {
 	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	overflow: auto;
+}
+
+.appNavSection {
 	display: grid;
 	gap: 6px;
 }
@@ -120,6 +135,103 @@
 	text-overflow: ellipsis;
 }
 
+.appNavGroup {
+	display: grid;
+	gap: 6px;
+}
+
+.appNavGroupBtn {
+	appearance: none;
+	border: 1px solid transparent;
+	background: transparent;
+	color: inherit;
+	border-radius: 12px;
+	padding: 0 10px;
+	height: 42px;
+	display: grid;
+	grid-template-columns: 40px 1fr auto;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.appNavGroupBtn:hover {
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
+.appNavGroupBtnActive {
+	border-color: var(--border);
+	background: var(--brand-soft);
+}
+
+.appNavChevron {
+	display: inline-grid;
+	place-items: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+}
+
+.appChevron {
+	transition: transform 160ms ease;
+}
+
+.appChevronOpen {
+	transform: rotate(180deg);
+}
+
+.appNavChildren {
+	display: none;
+	padding-left: 14px;
+}
+
+.appNavChildrenOpen {
+	display: grid;
+	gap: 6px;
+}
+
+.appNavChild {
+	display: grid;
+	grid-template-columns: 12px 1fr;
+	align-items: center;
+	gap: 10px;
+	height: 36px;
+	padding: 0 10px;
+	border-radius: 12px;
+	text-decoration: none;
+	color: color-mix(in srgb, var(--fg) 92%, transparent);
+	border: 1px solid transparent;
+}
+
+.appNavChild:hover {
+	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	text-decoration: none;
+}
+
+.appNavChildActive {
+	border-color: var(--border);
+	background: color-mix(in srgb, var(--brand) 10%, transparent);
+}
+
+.appNavChildDot {
+	width: 6px;
+	height: 6px;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+.appNavChildActive .appNavChildDot {
+	background: var(--brand);
+}
+
+.appNavChildLabel {
+	font-size: var(--text-sm);
+	font-weight: 650;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 /* Collapse behaviors */
 .appSidebarCollapsed .appBrandText {
 	display: none;
@@ -132,6 +244,20 @@
 }
 
 .appSidebarCollapsed .appNavLabel {
+	display: none;
+}
+
+.appSidebarCollapsed .appNavGroupBtn {
+	grid-template-columns: 1fr;
+	justify-items: center;
+	padding: 0;
+}
+
+.appSidebarCollapsed .appNavChevron {
+	display: none;
+}
+
+.appSidebarCollapsed .appNavChildren {
 	display: none;
 }
 
@@ -160,6 +286,36 @@
 	background: var(--surface);
 }
 
+.appTopbarGrow {
+	flex: 1 1 auto;
+}
+
+.appTopbarSearch {
+	width: min(520px, 45vw);
+}
+
+.appSearchInput {
+	width: 100%;
+	height: 38px;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+	background: color-mix(in srgb, var(--bg) 92%, transparent);
+	padding: 0 14px;
+	outline: none;
+}
+
+.appSearchInput::placeholder {
+	color: color-mix(in srgb, var(--muted) 85%, transparent);
+}
+
+.appTopbarAvatarBtn {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+}
+
 .appTopbarTitle {
 	font-weight: 800;
 	letter-spacing: -0.2px;
@@ -170,6 +326,60 @@
 
 .appContent {
 	padding: 16px;
+}
+
+/* Sidebar footer */
+.appSidebarFooter {
+	margin-top: auto;
+	padding: 12px;
+	border-top: 1px solid var(--border);
+	display: grid;
+	grid-template-columns: 40px 1fr;
+	align-items: center;
+	gap: 10px;
+}
+
+.appAvatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+	background: var(--brand-soft);
+	display: grid;
+	place-items: center;
+}
+
+.appAvatarText {
+	font-weight: 900;
+}
+
+.appUserMeta {
+	min-width: 0;
+}
+
+.appUserName {
+	font-weight: 800;
+	line-height: 1.1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.appUserRole {
+	font-size: var(--text-xs);
+	color: var(--muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.appSidebarCollapsed .appSidebarFooter {
+	grid-template-columns: 1fr;
+	justify-items: center;
+}
+
+.appSidebarCollapsed .appUserMeta {
+	display: none;
 }
 
 /* Basic page container (for placeholder pages) */

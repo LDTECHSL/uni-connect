@@ -1,15 +1,22 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
+import logo from "../assets/uni-connect-sm.png";
 
 type NavbarProps = {
     children?: React.ReactNode;
 };
 
-type NavItem = {
+type NavLeaf = {
     to: string;
     label: string;
+};
+
+type NavGroup = {
+    id: string;
+    label: string;
     icon: (props: React.SVGProps<SVGSVGElement>) => React.ReactNode;
+    children: NavLeaf[];
 };
 
 function IconMenu(props: React.SVGProps<SVGSVGElement>) {
@@ -45,6 +52,17 @@ function IconChevronRight(props: React.SVGProps<SVGSVGElement>) {
     );
 }
 
+function IconChevronDown(props: React.SVGProps<SVGSVGElement>) {
+    return (
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
+            <path
+                fill="currentColor"
+                d="M6.3 8.3a1 1 0 0 1 1.4 0l4.3 4.3 4.3-4.3a1 1 0 1 1 1.4 1.4l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 0 1 0-1.4Z"
+            />
+        </svg>
+    );
+}
+
 function IconHome(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
@@ -56,37 +74,72 @@ function IconHome(props: React.SVGProps<SVGSVGElement>) {
     );
 }
 
-function IconUser(props: React.SVGProps<SVGSVGElement>) {
+function IconBooks(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
             <path
                 fill="currentColor"
-                d="M12 12.2a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2ZM4 21a7.9 7.9 0 0 1 16 0 1 1 0 1 1-2 0 5.9 5.9 0 0 0-12 0 1 1 0 1 1-2 0Z"
+                d="M5 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16a1 1 0 0 1-1.4.9L12 18.5l-5.6 2.4A1 1 0 0 1 5 20V4Zm2 0v14.5l4.6-2a1 1 0 0 1 .8 0l4.6 2V4H7Z"
             />
         </svg>
     );
 }
 
-function IconSettings(props: React.SVGProps<SVGSVGElement>) {
+function IconUsers(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
             <path
                 fill="currentColor"
-                d="M19.4 13.5c.04-.5.04-1 0-1.5l1.6-1.2a1 1 0 0 0 .3-1.3l-1.6-2.8a1 1 0 0 0-1.2-.4l-1.9.8c-.4-.3-.9-.6-1.4-.8l-.3-2a1 1 0 0 0-1-.9h-3.2a1 1 0 0 0-1 .9l-.3 2c-.5.2-1 .5-1.4.8l-1.9-.8a1 1 0 0 0-1.2.4L2.7 9.2a1 1 0 0 0 .3 1.3l1.6 1.2c-.04.5-.04 1 0 1.5L3 14.7a1 1 0 0 0-.3 1.3l1.6 2.8a1 1 0 0 0 1.2.4l1.9-.8c.4.3.9.6 1.4.8l.3 2a1 1 0 0 0 1 .9h3.2a1 1 0 0 0 1-.9l.3-2c.5-.2 1-.5 1.4-.8l1.9.8a1 1 0 0 0 1.2-.4l1.6-2.8a1 1 0 0 0-.3-1.3l-1.6-1.2ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"
+                d="M7.5 12a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm9 3a3 3 0 1 1 0-6 3 3 0 0 1 0 6ZM2 21a6 6 0 0 1 12 0 1 1 0 1 1-2 0 4 4 0 0 0-8 0 1 1 0 1 1-2 0Zm13 6a4.5 4.5 0 0 1 9 0 1 1 0 1 1-2 0 2.5 2.5 0 0 0-5 0 1 1 0 1 1-2 0Z"
             />
         </svg>
     );
 }
 
-const NAV_ITEMS: NavItem[] = [
-    { to: "/app", label: "Dashboard", icon: (p) => <IconHome {...p} /> },
-    { to: "/app/profile", label: "Profile", icon: (p) => <IconUser {...p} /> },
-    { to: "/app/settings", label: "Settings", icon: (p) => <IconSettings {...p} /> },
+const NAV_ROOT: NavLeaf[] = [{ to: "/app", label: "Dashboard" }];
+
+const NAV_GROUPS: NavGroup[] = [
+    {
+        id: "courses",
+        label: "Courses",
+        icon: (p) => <IconBooks {...p} />,
+        children: [
+            { to: "/app/courses/manage", label: "Manage Course" },
+            { to: "/app/courses/new", label: "Add New Course" },
+            { to: "/app/courses/category", label: "Course Category" },
+            { to: "/app/courses/coupons", label: "Coupons" },
+            { to: "/app/courses/bundle", label: "Course Bundle" },
+            { to: "/app/courses/subscriptions", label: "Subscription Reports" },
+        ],
+    },
+    {
+        id: "users",
+        label: "Users",
+        icon: (p) => <IconUsers {...p} />,
+        children: [{ to: "/app/users", label: "Users" }],
+    },
 ];
+
+function isPathInGroup(pathname: string, group: NavGroup) {
+    return group.children.some((c) => pathname === c.to || pathname.startsWith(c.to + "/"));
+}
 
 export default function Navbar({ children }: NavbarProps) {
     const [isMobileOpen, setIsMobileOpen] = React.useState(false);
     const [isCollapsed, setIsCollapsed] = React.useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const initialOpenGroups = React.useMemo(() => {
+        const open = new Set<string>();
+        for (const group of NAV_GROUPS) {
+            if (isPathInGroup(location.pathname, group)) open.add(group.id);
+        }
+        return open;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const [openGroups, setOpenGroups] = React.useState<Set<string>>(initialOpenGroups);
 
     React.useEffect(() => {
         if (!isMobileOpen) return;
@@ -99,14 +152,31 @@ export default function Navbar({ children }: NavbarProps) {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [isMobileOpen]);
 
+    React.useEffect(() => {
+        setOpenGroups((prev) => {
+            const next = new Set(prev);
+            for (const group of NAV_GROUPS) {
+                if (isPathInGroup(location.pathname, group)) next.add(group.id);
+            }
+            return next;
+        });
+    }, [location.pathname]);
+
+    const toggleGroup = (groupId: string) => {
+        setOpenGroups((prev) => {
+            const next = new Set(prev);
+            if (next.has(groupId)) next.delete(groupId);
+            else next.add(groupId);
+            return next;
+        });
+    };
+
     const content = children ?? <Outlet />;
 
     return (
         <div className="appFrame">
             <div
-                className={
-                    "appOverlay" + (isMobileOpen ? " appOverlayOpen" : "")
-                }
+                className={"appOverlay" + (isMobileOpen ? " appOverlayOpen" : "")}
                 onClick={() => setIsMobileOpen(false)}
                 aria-hidden={!isMobileOpen}
             />
@@ -120,10 +190,18 @@ export default function Navbar({ children }: NavbarProps) {
                 aria-label="Sidebar"
             >
                 <div className="appSidebarHeader">
-                    <div className="appBrand" title="UniConnect">
-                        <div className="appBrandMark" aria-hidden="true" />
+                    <button
+                        type="button"
+                        className="appLogoBtn"
+                        onClick={() => {
+                            setIsMobileOpen(false);
+                            navigate("/app");
+                        }}
+                        aria-label="Go to Dashboard"
+                    >
+                        <img className="appLogo" src={logo} alt="UniConnect" />
                         <span className="appBrandText">UniConnect</span>
-                    </div>
+                    </button>
 
                     <button
                         type="button"
@@ -137,24 +215,90 @@ export default function Navbar({ children }: NavbarProps) {
                 </div>
 
                 <nav className="appNav" aria-label="Primary">
-                    {NAV_ITEMS.map((item) => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.to === "/app"}
-                            className={({ isActive }) =>
-                                "appNavLink" + (isActive ? " appNavLinkActive" : "")
-                            }
-                            title={item.label}
-                            onClick={() => setIsMobileOpen(false)}
-                        >
-                            <span className="appNavIcon" aria-hidden="true">
-                                {item.icon({})}
-                            </span>
-                            <span className="appNavLabel">{item.label}</span>
-                        </NavLink>
-                    ))}
+                    <div className="appNavSection">
+                        {NAV_ROOT.map((leaf) => (
+                            <NavLink
+                                key={leaf.to}
+                                to={leaf.to}
+                                end
+                                className={({ isActive }) =>
+                                    "appNavLink" + (isActive ? " appNavLinkActive" : "")
+                                }
+                                title={leaf.label}
+                                onClick={() => setIsMobileOpen(false)}
+                            >
+                                <span className="appNavIcon" aria-hidden="true">
+                                    <IconHome />
+                                </span>
+                                <span className="appNavLabel">{leaf.label}</span>
+                            </NavLink>
+                        ))}
+                    </div>
+
+                    {NAV_GROUPS.map((group) => {
+                        const isOpen = openGroups.has(group.id);
+                        const isActive = isPathInGroup(location.pathname, group);
+
+                        return (
+                            <div key={group.id} className="appNavGroup">
+                                <button
+                                    type="button"
+                                    className={
+                                        "appNavGroupBtn" +
+                                        (isActive ? " appNavGroupBtnActive" : "")
+                                    }
+                                    onClick={() => toggleGroup(group.id)}
+                                    aria-expanded={isOpen}
+                                    title={group.label}
+                                >
+                                    <span className="appNavIcon" aria-hidden="true">
+                                        {group.icon({})}
+                                    </span>
+                                    <span className="appNavLabel">{group.label}</span>
+                                    <span className="appNavChevron" aria-hidden="true">
+                                        <IconChevronDown
+                                            className={
+                                                "appChevron" + (isOpen ? " appChevronOpen" : "")
+                                            }
+                                        />
+                                    </span>
+                                </button>
+
+                                <div
+                                    className={
+                                        "appNavChildren" +
+                                        (isOpen && !isCollapsed ? " appNavChildrenOpen" : "")
+                                    }
+                                >
+                                    {group.children.map((child) => (
+                                        <NavLink
+                                            key={child.to}
+                                            to={child.to}
+                                            className={({ isActive }) =>
+                                                "appNavChild" + (isActive ? " appNavChildActive" : "")
+                                            }
+                                            title={child.label}
+                                            onClick={() => setIsMobileOpen(false)}
+                                        >
+                                            <span className="appNavChildDot" aria-hidden="true" />
+                                            <span className="appNavChildLabel">{child.label}</span>
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </nav>
+
+                <div className="appSidebarFooter" aria-label="Sidebar footer">
+                    <div className="appAvatar" aria-hidden="true">
+                        <span className="appAvatarText">U</span>
+                    </div>
+                    <div className="appUserMeta">
+                        <div className="appUserName">User</div>
+                        <div className="appUserRole">Admin</div>
+                    </div>
+                </div>
             </aside>
 
             <div className="appMain">
@@ -167,7 +311,25 @@ export default function Navbar({ children }: NavbarProps) {
                     >
                         <IconMenu />
                     </button>
-                    <div className="appTopbarTitle">UniConnect</div>
+
+                    <div className="appTopbarTitle">Manage</div>
+
+                    <div className="appTopbarGrow" />
+
+                    <div className="appTopbarSearch" role="search">
+                        <input
+                            className="appSearchInput"
+                            type="search"
+                            placeholder="Search"
+                            aria-label="Search"
+                        />
+                    </div>
+
+                    <button type="button" className="appTopbarAvatarBtn" aria-label="Account">
+                        <div className="appAvatar" aria-hidden="true">
+                            <span className="appAvatarText">U</span>
+                        </div>
+                    </button>
                 </header>
 
                 <main className="appContent" aria-label="Page content">
