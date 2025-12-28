@@ -403,7 +403,7 @@ export default function Posts() {
                         </button>
                     </div>
 
-                    <div style={{ flex: 1, display: "grid", placeItems: "center", padding: 12, gap: 12 }}>
+                    <div style={{ flex: 1, display: "grid", placeItems: "center", padding: 12, gap: 12, overflowY: "auto" }}>
                         {modal.images.length > 0 && (
                             <img
                                 src={modal.images[modal.index]}
