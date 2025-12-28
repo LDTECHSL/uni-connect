@@ -12,7 +12,10 @@ public class GetPostsHandler (IApplicationDbContext dbContext) : IRequestHandler
 {
     public async Task<List<PostResponse>> Handle(GetPosts request, CancellationToken cancellationToken)
     {
-        var posts = await dbContext.Posts.ToListAsync(cancellationToken);
+        var posts = await dbContext.Posts
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(50)
+            .ToListAsync(cancellationToken);
         var userIds = posts.Select(p => p.UserId).Distinct().ToList();
         var users = await dbContext.Users
             .Where(u => userIds.Contains(u.Id))
@@ -21,7 +24,7 @@ public class GetPostsHandler (IApplicationDbContext dbContext) : IRequestHandler
         {
             Id = p.Id,
             Caption = p.Caption,
-            Category = p.Category.Value.ToString(),
+            Category = p.Category.HasValue ? p.Category.Value.ToString() : null,
             Images = p.Images,
             UserId = p.UserId,
             CreatedAt = p.CreatedAt,
