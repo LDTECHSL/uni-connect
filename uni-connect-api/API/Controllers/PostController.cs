@@ -40,4 +40,12 @@ public class PostController : ControllerBase
         var res = await _mediator.Send(query);
         return Ok(res);
     }
+    
+    [HttpDelete("{id}/user/{userId}")]
+    public async Task<IActionResult> DeletePost(int id, int userId)
+    {
+        var command = new DeletePost() { PostId = id, UserId = userId };
+        var res = await _mediator.Send(command);
+        return Ok(res);
+    }
 }
