@@ -1,0 +1,222 @@
+.postsPage {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 16px;
+}
+
+.postsHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.postsTitle {
+	margin: 0;
+}
+
+.postsButton {
+	border: 1px solid var(--border);
+	background: var(--surface);
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+}
+
+.postsCard {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	padding: 16px;
+}
+
+.postsCardCenter {
+	text-align: center;
+}
+
+.postsError {
+	margin-bottom: 16px;
+}
+
+.postsMuted {
+	color: var(--muted);
+	font-size: var(--text-sm);
+}
+
+.postsList {
+	display: grid;
+	gap: 12px;
+}
+
+.postTopRow {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.postUserName {
+	font-weight: 600;
+}
+
+.saveBtn {
+	border: 1px solid var(--border);
+	background: var(--surface);
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+	white-space: nowrap;
+}
+
+.saveBtnSaved {
+	background: var(--brand-soft);
+}
+
+.categoryRow {
+	margin-top: 10px;
+}
+
+.categoryPill {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+	background: var(--brand-soft);
+	font-size: var(--text-sm);
+}
+
+.captionRow {
+	margin-top: 10px;
+}
+
+.captionText {
+	white-space: pre-wrap;
+}
+
+.captionToggle {
+	margin-top: 6px;
+	border: none;
+	background: transparent;
+	padding: 0;
+	color: var(--brand);
+	font-size: var(--text-sm);
+}
+
+.imagesGrid {
+	margin-top: 12px;
+	display: grid;
+	gap: 8px;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.imagesGridOne {
+	grid-template-columns: 1fr;
+}
+
+.thumbButton {
+	border: none;
+	padding: 0;
+	background: transparent;
+	text-align: inherit;
+	position: relative;
+}
+
+.thumbImage {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	display: block;
+}
+
+.extraOverlay {
+	position: absolute;
+	inset: 0;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: color-mix(in srgb, var(--fg) 45%, transparent);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: var(--text-xl);
+	color: var(--surface);
+}
+
+/* Modal */
+.modalBackdrop {
+	position: fixed;
+	inset: 0;
+	background: color-mix(in srgb, var(--fg) 70%, transparent);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	z-index: 1000;
+}
+
+.modalPanel {
+	width: min(980px, 100%);
+	max-height: min(86vh, 900px);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.modalHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px;
+	border-bottom: 1px solid var(--border);
+}
+
+.modalClose {
+	border: 1px solid var(--border);
+	background: var(--surface);
+	border-radius: var(--radius-sm);
+	padding: 6px 10px;
+}
+
+.modalStage {
+	flex: 1;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
+	overflow: auto;
+
+}
+
+.modalImage {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: var(--bg);
+	display: block;
+}
+
+.modalNav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	border: 1px solid var(--border);
+	background: color-mix(in srgb, var(--surface) 85%, transparent);
+	border-radius: var(--radius-sm);
+	padding: 10px 12px;
+}
+
+.modalNavPrev {
+	left: 12px;
+}
+
+.modalNavNext {
+	right: 12px;
+}

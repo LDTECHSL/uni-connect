@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllPosts } from "../services/post-api";
+import "../styles/posts.css";
 
 type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
@@ -16,40 +17,6 @@ interface PostResponse {
 }
 
 const SAVED_POST_IDS_KEY = "uni-connect:savedPostIds";
-
-const cardStyle: React.CSSProperties = {
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: "var(--radius-md)",
-    padding: 16,
-};
-
-const subtleTextStyle: React.CSSProperties = {
-    color: "var(--muted)",
-    fontSize: "var(--text-sm)",
-};
-
-const modalBackdropStyle: React.CSSProperties = {
-    position: "fixed",
-    inset: 0,
-    background: "color-mix(in srgb, var(--fg) 70%, transparent)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    zIndex: 1000,
-};
-
-const modalPanelStyle: React.CSSProperties = {
-    width: "min(980px, 100%)",
-    maxHeight: "min(86vh, 900px)",
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: "var(--radius-md)",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-};
 
 function safeArrayFromDotNet<T>(value: unknown): T[] {
     if (Array.isArray(value)) return value as T[];
@@ -194,37 +161,27 @@ export default function Posts() {
     }, [modal.open]);
     
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-            <h2 style={{ margin: 0 }}>Posts</h2>
-            <button
-                type="button"
-                onClick={handleGetPosts}
-                disabled={loading}
-                style={{
-                    border: "1px solid var(--border)",
-                    background: "var(--surface)",
-                    borderRadius: "var(--radius-sm)",
-                    padding: "8px 12px",
-                }}
-            >
+    <div className="postsPage">
+        <div className="postsHeader">
+            <h2 className="postsTitle">Posts</h2>
+            <button type="button" onClick={handleGetPosts} disabled={loading} className="postsButton">
                 {loading ? "Loading…" : "Refresh"}
             </button>
         </div>
 
         {error && (
-            <div style={{ ...cardStyle, marginBottom: 16 }}>
-                <div style={{ color: "var(--muted)" }}>{error}</div>
+            <div className="postsCard postsError">
+                <div className="postsMuted">{error}</div>
             </div>
         )}
 
         {!loading && posts.length === 0 && !error && (
-            <div style={{ ...cardStyle, textAlign: "center" }}>
-                <div style={subtleTextStyle}>No posts yet.</div>
+            <div className="postsCard postsCardCenter">
+                <div className="postsMuted">No posts yet.</div>
             </div>
         )}
 
-        <div style={{ display: "grid", gap: 12 }}>
+        <div className="postsList">
             {posts.map((post) => {
                 const rawImages = safeByteArrayFromDotNet(post.images);
                 const displayImages = rawImages.slice(0, 4);
@@ -236,63 +193,33 @@ export default function Posts() {
                 const shouldTruncateCaption = caption.length > captionLimit;
                 const captionText = shouldTruncateCaption && !isCaptionExpanded ? `${caption.slice(0, captionLimit)}…` : caption;
 
+                const imagesGridClass = displayImages.length === 1 ? "imagesGrid imagesGridOne" : "imagesGrid";
+                const saveBtnClass = isSaved ? "saveBtn saveBtnSaved" : "saveBtn";
+
                 return (
-                    <div key={post.id} style={cardStyle}>
-                        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+                    <div key={post.id} className="postsCard">
+                        <div className="postTopRow">
                             <div>
-                                <div style={{ fontWeight: 600 }}>{post.userName ?? "Unknown"}</div>
-                                <div style={subtleTextStyle}>{formatDate(post.createdAt)}</div>
+                                <div className="postUserName">{post.userName ?? "Unknown"}</div>
+                                <div className="postsMuted">{formatDate(post.createdAt)}</div>
                             </div>
 
-                            <button
-                                type="button"
-                                onClick={() => toggleSave(post.id)}
-                                style={{
-                                    border: "1px solid var(--border)",
-                                    background: isSaved ? "var(--brand-soft)" : "var(--surface)",
-                                    borderRadius: "var(--radius-sm)",
-                                    padding: "8px 12px",
-                                    whiteSpace: "nowrap",
-                                }}
-                                aria-pressed={isSaved}
-                            >
+                            <button type="button" onClick={() => toggleSave(post.id)} className={saveBtnClass} aria-pressed={isSaved}>
                                 {isSaved ? "Saved" : "Save"}
                             </button>
                         </div>
 
                         {post.category && (
-                            <div style={{ marginTop: 10 }}>
-                                <span
-                                    style={{
-                                        display: "inline-block",
-                                        padding: "4px 10px",
-                                        borderRadius: 999,
-                                        border: "1px solid var(--border)",
-                                        background: "var(--brand-soft)",
-                                        fontSize: "var(--text-sm)",
-                                    }}
-                                >
-                                    {post.category}
-                                </span>
+                            <div className="categoryRow">
+                                <span className="categoryPill">{post.category}</span>
                             </div>
                         )}
 
                         {caption.length > 0 && (
-                            <div style={{ marginTop: 10 }}>
-                                <div style={{ whiteSpace: "pre-wrap" }}>{captionText}</div>
+                            <div className="captionRow">
+                                <div className="captionText">{captionText}</div>
                                 {shouldTruncateCaption && (
-                                    <button
-                                        type="button"
-                                        onClick={() => toggleCaption(post.id)}
-                                        style={{
-                                            marginTop: 6,
-                                            border: "none",
-                                            background: "transparent",
-                                            padding: 0,
-                                            color: "var(--brand)",
-                                            fontSize: "var(--text-sm)",
-                                        }}
-                                    >
+                                    <button type="button" onClick={() => toggleCaption(post.id)} className="captionToggle">
                                         {isCaptionExpanded ? "See less" : "See more"}
                                     </button>
                                 )}
@@ -300,14 +227,7 @@ export default function Posts() {
                         )}
 
                         {displayImages.length > 0 && (
-                            <div
-                                style={{
-                                    marginTop: 12,
-                                    display: "grid",
-                                    gridTemplateColumns: displayImages.length === 1 ? "1fr" : "repeat(2, minmax(0, 1fr))",
-                                    gap: 8,
-                                }}
-                            >
+                            <div className={imagesGridClass}>
                                 {displayImages.map((img, idx) => {
                                     const showExtraOverlay = idx === 3 && extraCount > 0;
                                     return (
@@ -315,47 +235,17 @@ export default function Posts() {
                                             key={idx}
                                             type="button"
                                             onClick={() => openModal(post.id, rawImages, idx)}
-                                            style={{
-                                                border: "none",
-                                                padding: 0,
-                                                background: "transparent",
-                                                textAlign: "inherit",
-                                                position: "relative",
-                                            }}
+                                            className="thumbButton"
                                             aria-label={`Open image ${idx + 1} of ${rawImages.length}`}
                                         >
                                             <img
                                                 src={toImageSrc(img)}
                                                 alt={`Post ${post.id} image ${idx + 1}`}
                                                 loading="lazy"
-                                                style={{
-                                                    width: "100%",
-                                                    aspectRatio: "1 / 1",
-                                                    objectFit: "cover",
-                                                    borderRadius: "var(--radius-sm)",
-                                                    border: "1px solid var(--border)",
-                                                }}
+                                                className="thumbImage"
                                             />
 
-                                            {showExtraOverlay && (
-                                                <div
-                                                    style={{
-                                                        position: "absolute",
-                                                        inset: 0,
-                                                        borderRadius: "var(--radius-sm)",
-                                                        border: "1px solid var(--border)",
-                                                        background: "color-mix(in srgb, var(--fg) 45%, transparent)",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        fontWeight: 700,
-                                                        fontSize: "var(--text-xl)",
-                                                        color: "var(--surface)",
-                                                    }}
-                                                >
-                                                    +{extraCount}
-                                                </div>
-                                            )}
+                                            {showExtraOverlay && <div className="extraOverlay">+{extraCount}</div>}
                                         </button>
                                     );
                                 })}
@@ -370,82 +260,35 @@ export default function Posts() {
             <div
                 role="dialog"
                 aria-modal="true"
-                style={modalBackdropStyle}
+                className="modalBackdrop"
                 onMouseDown={(e) => {
                     if (e.target === e.currentTarget) closeModal();
                 }}
             >
-                <div style={modalPanelStyle}>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 12,
-                            padding: 12,
-                            borderBottom: "1px solid var(--border)",
-                        }}
-                    >
-                        <div style={subtleTextStyle}>
+                <div className="modalPanel">
+                    <div className="modalHeader">
+                        <div className="postsMuted">
                             Image {modal.images.length === 0 ? 0 : modal.index + 1} of {modal.images.length}
                         </div>
-                        <button
-                            type="button"
-                            onClick={closeModal}
-                            style={{
-                                border: "1px solid var(--border)",
-                                background: "var(--surface)",
-                                borderRadius: "var(--radius-sm)",
-                                padding: "6px 10px",
-                            }}
-                        >
+                        <button type="button" onClick={closeModal} className="modalClose">
                             Close
                         </button>
                     </div>
 
-                    <div style={{ flex: 1, display: "grid", placeItems: "center", padding: 12, gap: 12, overflowY: "auto" }}>
+                    <div className="modalStage">
                         {modal.images.length > 0 && (
-                            <img
-                                src={modal.images[modal.index]}
-                                alt="Selected"
-                                style={{
-                                    maxWidth: "100%",
-                                    maxHeight: "70vh",
-                                    objectFit: "contain",
-                                    borderRadius: "var(--radius-sm)",
-                                    border: "1px solid var(--border)",
-                                    background: "var(--bg)",
-                                }}
-                            />
+                            <img src={modal.images[modal.index]} alt="Selected" className="modalImage" />
                         )}
 
                         {modal.images.length > 1 && (
-                            <div style={{ display: "flex", gap: 8 }}>
-                                <button
-                                    type="button"
-                                    onClick={goPrev}
-                                    style={{
-                                        border: "1px solid var(--border)",
-                                        background: "var(--surface)",
-                                        borderRadius: "var(--radius-sm)",
-                                        padding: "8px 12px",
-                                    }}
-                                >
+                            <>
+                                <button type="button" onClick={goPrev} aria-label="Previous image" className="modalNav modalNavPrev">
                                     Prev
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={goNext}
-                                    style={{
-                                        border: "1px solid var(--border)",
-                                        background: "var(--surface)",
-                                        borderRadius: "var(--radius-sm)",
-                                        padding: "8px 12px",
-                                    }}
-                                >
+                                <button type="button" onClick={goNext} aria-label="Next image" className="modalNav modalNavNext">
                                     Next
                                 </button>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>
