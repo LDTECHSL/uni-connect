@@ -21,7 +21,7 @@ public class GetPostsHandler (IApplicationDbContext dbContext) : IRequestHandler
         {
             Id = p.Id,
             Caption = p.Caption,
-            Category = p.Category,
+            Category = p.Category.Value.ToString(),
             Images = p.Images,
             UserId = p.UserId,
             CreatedAt = p.CreatedAt,
@@ -35,7 +35,7 @@ public class PostResponse
 {
     public int Id { get; set; }
     public string? Caption { get; set; }
-    public CategoryTypes? Category { get; set; }
+    public string? Category { get; set; }
     public byte[][]? Images { get; set; }
     public int? UserId { get; set; }
     public DateTime CreatedAt { get; set; }
