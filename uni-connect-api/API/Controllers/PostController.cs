@@ -32,4 +32,12 @@ public class PostController : ControllerBase
         var res = await _mediator.Send(new GetPosts());
         return Ok(res);
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPostById(int id)
+    {
+        var query = new GetMyPosts() { UserId = id };
+        var res = await _mediator.Send(query);
+        return Ok(res);
+    }
 }
