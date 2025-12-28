@@ -1,4 +1,5 @@
 ﻿using Application.Post.Commands;
+using Application.Post.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,13 @@ public class PostController : ControllerBase
     {
         
         var res = await _mediator.Send(command);
+        return Ok(res);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetPosts()
+    {
+        var res = await _mediator.Send(new GetPosts());
         return Ok(res);
     }
 }
