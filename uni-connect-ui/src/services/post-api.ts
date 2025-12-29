@@ -12,14 +12,7 @@ export const getAllPosts = async () => {
     }
 }
 
-export type CreatePostRequest = {
-    caption?: string;
-    category?: "Announcement" | "Notes" | "Events";
-    userId?: number;
-    images?: File[];
-};
-
-export const createPost = async (data: CreatePostRequest) => {
+export const createPost = async (data: any) => {
     try {
         const form = new FormData();
 
