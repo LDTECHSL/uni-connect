@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { getAllPosts } from "../services/post-api";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPost, getAllPosts } from "../services/post-api";
 import "../styles/posts.css";
+import AddIcon from "@mui/icons-material/Add";
+import { showError, showSuccess } from "../components/Toast";
 
 type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
@@ -91,6 +93,15 @@ export default function Posts() {
     const [error, setError] = useState<string | null>(null);
     const [savedIds, setSavedIds] = useState<number[]>(() => readSavedIds());
     const [expandedCaptionIds, setExpandedCaptionIds] = useState<number[]>([]);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [selectedFilter, setSelectedFilter] = useState<"announcement" | "notes" | "events" | null>(null);
+    const filterRef = useRef<HTMLDivElement | null>(null);
+
+    const [createOpen, setCreateOpen] = useState(false);
+    const [createCaption, setCreateCaption] = useState("");
+    const [createCategory, setCreateCategory] = useState<"Announcement" | "Notes" | "Events" | "">("");
+    const [createFiles, setCreateFiles] = useState<File[]>([]);
+    const [createSubmitting, setCreateSubmitting] = useState(false);
     const [modal, setModal] = useState<{ open: boolean; postId: number | null; images: string[]; index: number }>(
         { open: false, postId: null, images: [], index: 0 }
     );
@@ -116,6 +127,32 @@ export default function Posts() {
 
     const savedSet = useMemo(() => new Set(savedIds), [savedIds]);
     const expandedSet = useMemo(() => new Set(expandedCaptionIds), [expandedCaptionIds]);
+
+    const visiblePosts = useMemo(() => {
+        if (!selectedFilter) return posts;
+        const expected = selectedFilter.toLowerCase();
+        return posts.filter((p) => (p.category ?? "").toLowerCase() === expected);
+    }, [posts, selectedFilter]);
+
+    const selectedFilterLabel = useMemo(() => {
+        if (!selectedFilter) return "Filter";
+        if (selectedFilter === "announcement") return "Filter: Announcement";
+        if (selectedFilter === "notes") return "Filter: Notes";
+        return "Filter: Events";
+    }, [selectedFilter]);
+
+    useEffect(() => {
+        if (!filterOpen) return;
+        const onMouseDown = (e: MouseEvent) => {
+            const target = e.target as Node | null;
+            if (!target) return;
+            if (filterRef.current && !filterRef.current.contains(target)) {
+                setFilterOpen(false);
+            }
+        };
+        window.addEventListener("mousedown", onMouseDown);
+        return () => window.removeEventListener("mousedown", onMouseDown);
+    }, [filterOpen]);
 
     const toggleSave = (postId: number) => {
         setSavedIds((prev) => {
@@ -158,14 +195,127 @@ export default function Posts() {
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [modal.open]);
+
+    const openCreate = () => {
+        setCreateCaption("");
+        setCreateCategory("");
+        setCreateFiles([]);
+        setCreateOpen(true);
+    };
+
+    const closeCreate = () => {
+        if (createSubmitting) return;
+        setCreateOpen(false);
+    };
+
+    const handleCreateFiles = (files: FileList | null) => {
+        const list = files ? Array.from(files) : [];
+        const limited = list.slice(0, 5);
+        setCreateFiles(limited);
+        if (list.length > 5) {
+            showError("Only 5 images allowed");
+        }
+    };
+
+    const submitCreate = async () => {
+        if (createSubmitting) return;
+
+        if (!createCategory) {
+            showError("Please select a category");
+            return;
+        }
+
+        try {
+            setCreateSubmitting(true);
+
+            const userIdRaw = localStorage.getItem("uni-connect:userId") ?? localStorage.getItem("userId");
+            const userId = userIdRaw ? Number(userIdRaw) : undefined;
+
+            await createPost({
+                caption: createCaption.trim() || undefined,
+                category: createCategory,
+                userId: Number.isFinite(userId) ? userId : undefined,
+                images: createFiles,
+            });
+
+            showSuccess("Post created");
+            setCreateOpen(false);
+            await handleGetPosts();
+        } catch (e: any) {
+            const message = e?.response?.data?.Message || e?.message || "Failed to create post";
+            showError(message);
+        } finally {
+            setCreateSubmitting(false);
+        }
+    };
     
   return (
     <div className="postsPage">
         <div className="postsHeader">
             <h2 className="postsTitle">Posts</h2>
-            <button type="button" onClick={handleGetPosts} disabled={loading} className="postsButton">
-                {loading ? "Loading…" : "Refresh"}
-            </button>
+            <div className="postsToolbarActions">
+                <div className="postsFilterWrap" ref={filterRef}>
+                    <button
+                        type="button"
+                        className="postsButton"
+                        aria-haspopup="menu"
+                        aria-expanded={filterOpen}
+                        onClick={() => setFilterOpen((v) => !v)}
+                        disabled={loading}
+                    >
+                        {selectedFilterLabel}
+                    </button>
+
+                    {filterOpen && (
+                        <div className="postsFilterMenu" role="menu">
+                            <button
+                                type="button"
+                                role="menuitem"
+                                className="postsFilterItem"
+                                onClick={() => {
+                                    setSelectedFilter("announcement");
+                                    setFilterOpen(false);
+                                }}
+                            >
+                                Announcement
+                            </button>
+                            <button
+                                type="button"
+                                role="menuitem"
+                                className="postsFilterItem"
+                                onClick={() => {
+                                    setSelectedFilter("notes");
+                                    setFilterOpen(false);
+                                }}
+                            >
+                                Notes
+                            </button>
+                            <button
+                                type="button"
+                                role="menuitem"
+                                className="postsFilterItem"
+                                onClick={() => {
+                                    setSelectedFilter("events");
+                                    setFilterOpen(false);
+                                }}
+                            >
+                                Events
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <button
+                    type="button"
+                    className="postsCreateButton"
+                    onClick={() => {
+                        openCreate();
+                    }}
+                >
+                    <AddIcon fontSize="small" />
+                    Create Post
+                </button>
+            </div>
         </div>
 
         {error && (
@@ -181,7 +331,7 @@ export default function Posts() {
         )}
 
         <div className="postsList">
-            {posts.map((post) => {
+            {visiblePosts.map((post) => {
                 const rawImages = safeByteArrayFromDotNet(post.images);
                 const displayImages = rawImages.slice(0, 4);
                 const extraCount = Math.max(0, rawImages.length - 4);
@@ -289,6 +439,83 @@ export default function Posts() {
                                 </button>
                             </>
                         )}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {createOpen && (
+            <div
+                role="dialog"
+                aria-modal="true"
+                className="modalBackdrop"
+                onMouseDown={(e) => {
+                    if (e.target === e.currentTarget) closeCreate();
+                }}
+            >
+                <div className="createModalPanel">
+                    <div className="modalHeader">
+                        <div className="createModalTitle">Create Post</div>
+                        <button type="button" onClick={closeCreate} className="modalClose" disabled={createSubmitting}>
+                            Close
+                        </button>
+                    </div>
+
+                    <div className="createModalBody">
+                        <label className="createLabel" htmlFor="postCategory">
+                            Category
+                        </label>
+                        <select
+                            id="postCategory"
+                            className="createSelect"
+                            value={createCategory}
+                            onChange={(e) => setCreateCategory(e.target.value as any)}
+                            disabled={createSubmitting}
+                        >
+                            <option value="">Select</option>
+                            <option value="Announcement">Announcement</option>
+                            <option value="Notes">Notes</option>
+                            <option value="Events">Events</option>
+                        </select>
+
+                        <label className="createLabel" htmlFor="postCaption">
+                            Caption
+                        </label>
+                        <textarea
+                            id="postCaption"
+                            className="createTextarea"
+                            value={createCaption}
+                            onChange={(e) => setCreateCaption(e.target.value)}
+                            placeholder="Write something…"
+                            rows={4}
+                            disabled={createSubmitting}
+                        />
+
+                        <label className="createLabel" htmlFor="postImages">
+                            Images (max 5)
+                        </label>
+                        <input
+                            id="postImages"
+                            className="createFile"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleCreateFiles(e.target.files)}
+                            disabled={createSubmitting}
+                        />
+
+                        {createFiles.length > 0 && (
+                            <div className="createHint">Selected: {createFiles.length} file(s)</div>
+                        )}
+                    </div>
+
+                    <div className="createModalFooter">
+                        <button type="button" className="postsButton" onClick={closeCreate} disabled={createSubmitting}>
+                            Cancel
+                        </button>
+                        <button type="button" className="postsCreateButton" onClick={submitCreate} disabled={createSubmitting}>
+                            {createSubmitting ? "Creating…" : "Create"}
+                        </button>
                     </div>
                 </div>
             </div>

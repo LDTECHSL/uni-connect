@@ -12,6 +12,50 @@
 	margin-bottom: 16px;
 }
 
+.postsToolbarActions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.postsFilterWrap {
+	position: relative;
+}
+
+.postsFilterMenu {
+	position: absolute;
+	right: 0;
+	top: calc(100% + 8px);
+	min-width: 220px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	z-index: 20;
+}
+
+.postsFilterItem {
+	width: 100%;
+	text-align: left;
+	border: none;
+	background: transparent;
+	padding: 10px 12px;
+}
+
+.postsFilterItem:hover {
+	background: var(--brand-soft);
+}
+
+.postsCreateButton {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border: 1px solid var(--border);
+	background: var(--brand-soft);
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+}
+
 .postsTitle {
 	margin: 0;
 }
@@ -24,7 +68,7 @@
 }
 
 .postsCard {
-	background: var(--surface);
+	background-color: white;
 	border: 1px solid var(--border);
 	border-radius: var(--radius-md);
 	padding: 16px;
@@ -164,6 +208,64 @@
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+}
+
+/* Create Post Modal */
+.createModalPanel {
+	width: min(720px, 100%);
+	max-height: min(86vh, 900px);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.createModalTitle {
+	font-weight: 700;
+}
+
+.createModalBody {
+	padding: 12px;
+	display: grid;
+	gap: 10px;
+	overflow: auto;
+}
+
+.createLabel {
+	font-size: var(--text-sm);
+	color: var(--muted);
+}
+
+.createSelect,
+.createTextarea {
+	width: 100%;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--surface);
+	padding: 10px 12px;
+}
+
+.createTextarea {
+	resize: vertical;
+}
+
+.createFile {
+	width: 100%;
+}
+
+.createHint {
+	font-size: var(--text-sm);
+	color: var(--muted);
+}
+
+.createModalFooter {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 12px;
+	border-top: 1px solid var(--border);
 }
 
 .modalHeader {

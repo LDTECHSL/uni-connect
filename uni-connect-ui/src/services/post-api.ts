@@ -11,3 +11,32 @@ export const getAllPosts = async () => {
         throw error;
     }
 }
+
+export type CreatePostRequest = {
+    caption?: string;
+    category?: "Announcement" | "Notes" | "Events";
+    userId?: number;
+    images?: File[];
+};
+
+export const createPost = async (data: CreatePostRequest) => {
+    try {
+        const form = new FormData();
+
+        if (data.caption) form.append("Caption", data.caption);
+        if (data.category) form.append("Category", data.category);
+        if (typeof data.userId === "number") form.append("UserId", String(data.userId));
+
+        const files = (data.images ?? []).slice(0, 5);
+        for (const file of files) {
+            form.append("Images", file);
+        }
+
+        const response = await axios.post(`${API_URL}`, form, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
