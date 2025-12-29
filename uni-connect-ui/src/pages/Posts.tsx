@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPost, getAllPosts } from "../services/post-api";
 import "../styles/posts.css";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import { showError, showSuccess } from "../components/Toast";
 
 type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
@@ -101,7 +102,9 @@ export default function Posts() {
     const [createCaption, setCreateCaption] = useState("");
     const [createCategory, setCreateCategory] = useState<"Announcement" | "Notes" | "Events" | "">("");
     const [createFiles, setCreateFiles] = useState<File[]>([]);
+    const [createPreviewUrls, setCreatePreviewUrls] = useState<string[]>([]);
     const [createSubmitting, setCreateSubmitting] = useState(false);
+    const createFileInputRef = useRef<HTMLInputElement | null>(null);
     const [modal, setModal] = useState<{ open: boolean; postId: number | null; images: string[]; index: number }>(
         { open: false, postId: null, images: [], index: 0 }
     );
@@ -198,6 +201,14 @@ export default function Posts() {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [modal.open]);
 
+    useEffect(() => {
+        const urls = createFiles.map((file) => URL.createObjectURL(file));
+        setCreatePreviewUrls(urls);
+        return () => {
+            for (const url of urls) URL.revokeObjectURL(url);
+        };
+    }, [createFiles]);
+
     const openCreate = () => {
         setCreateCaption("");
         setCreateCategory("");
@@ -211,12 +222,33 @@ export default function Posts() {
     };
 
     const handleCreateFiles = (files: FileList | null) => {
-        const list = files ? Array.from(files) : [];
-        const limited = list.slice(0, 5);
-        setCreateFiles(limited);
-        if (list.length > 5) {
-            showError("Only 5 images allowed");
+        const picked = files ? Array.from(files) : [];
+        if (picked.length === 0) return;
+
+        setCreateFiles((prev) => {
+            const remainingSlots = Math.max(0, 5 - prev.length);
+            const toAdd = picked.slice(0, remainingSlots);
+
+            if (picked.length > remainingSlots) {
+                showError("Only 5 images allowed");
+            }
+
+            return [...prev, ...toAdd];
+        });
+
+        // Allow picking the same file again
+        if (createFileInputRef.current) {
+            createFileInputRef.current.value = "";
         }
+    };
+
+    const removeCreateFile = (index: number) => {
+        setCreateFiles((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const openCreatePreview = (index: number) => {
+        if (createPreviewUrls.length === 0) return;
+        setModal({ open: true, postId: null, images: createPreviewUrls, index });
     };
 
     const submitCreate = async () => {
@@ -499,6 +531,7 @@ export default function Posts() {
                         <input
                             id="postImages"
                             className="createFile"
+                            ref={createFileInputRef}
                             type="file"
                             accept="image/*"
                             multiple
@@ -508,6 +541,35 @@ export default function Posts() {
 
                         {createFiles.length > 0 && (
                             <div className="createHint">Selected: {createFiles.length} file(s)</div>
+                        )}
+
+                        {createPreviewUrls.length > 0 && (
+                            <div className="createPreviewGrid" aria-label="Selected images">
+                                {createPreviewUrls.map((src, idx) => (
+                                    <button
+                                        key={src}
+                                        type="button"
+                                        className="createPreviewItem"
+                                        onClick={() => openCreatePreview(idx)}
+                                        disabled={createSubmitting}
+                                        aria-label={`Preview image ${idx + 1}`}
+                                    >
+                                        <img className="createPreviewImg" src={src} alt={`Selected ${idx + 1}`} />
+                                        <button
+                                            type="button"
+                                            className="createPreviewRemove"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                removeCreateFile(idx);
+                                            }}
+                                            aria-label={`Remove image ${idx + 1}`}
+                                            disabled={createSubmitting}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </button>
+                                    </button>
+                                ))}
+                            </div>
                         )}
                     </div>
 
