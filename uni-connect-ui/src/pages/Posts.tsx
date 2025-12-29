@@ -16,7 +16,6 @@ interface PostResponse {
     userName?: string | null;
 }
 
-const SAVED_POST_IDS_KEY = "uni-connect:savedPostIds";
 
 function safeArrayFromDotNet<T>(value: unknown): T[] {
     if (Array.isArray(value)) return value as T[];
@@ -70,7 +69,7 @@ function formatDate(value: string): string {
 
 function readSavedIds(): number[] {
     try {
-        const raw = localStorage.getItem(SAVED_POST_IDS_KEY);
+        const raw = localStorage.getItem("uni-connect:savedPostIds");
         if (!raw) return [];
         const parsed = JSON.parse(raw) as JsonValue;
         if (!Array.isArray(parsed)) return [];
@@ -83,7 +82,7 @@ function readSavedIds(): number[] {
 }
 
 function writeSavedIds(ids: number[]) {
-    localStorage.setItem(SAVED_POST_IDS_KEY, JSON.stringify(ids));
+    localStorage.setItem("uni-connect:savedPostIds", JSON.stringify(ids));
 }
 
 export default function Posts() {
