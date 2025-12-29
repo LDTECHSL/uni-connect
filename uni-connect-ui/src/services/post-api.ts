@@ -3,16 +3,20 @@ import { getEnv } from "../env";
 
 const API_URL = getEnv().API_URL + "/posts";
 
-export const getAllPosts = async () => {
+export const getAllPosts = async (token: string) => {
     try {
-        const response = await axios.get(`${API_URL}`);
+        const response = await axios.get(`${API_URL}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response;
     } catch (error) {
         throw error;
     }
 }
 
-export const createPost = async (data: any) => {
+export const createPost = async (data: any, token: string) => {
     try {
         const form = new FormData();
 
@@ -26,7 +30,10 @@ export const createPost = async (data: any) => {
         }
 
         const response = await axios.post(`${API_URL}`, form, {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { 
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`
+            },
         });
         return response;
     } catch (error) {

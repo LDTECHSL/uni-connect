@@ -102,6 +102,9 @@ export default function Navbar({ children }: NavbarProps) {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const username = sessionStorage.getItem('userName') || 'User';
+    const userType = sessionStorage.getItem('userType') || 'User';
+
     const initialOpenGroups = React.useMemo(() => {
         const open = new Set<string>();
         for (const group of NAV_GROUPS) {
@@ -112,6 +115,14 @@ export default function Navbar({ children }: NavbarProps) {
     }, []);
 
     const [openGroups, setOpenGroups] = React.useState<Set<string>>(initialOpenGroups);
+
+    const token = sessionStorage.getItem('jwtToken') || '';
+
+    React.useEffect(() => {
+        if (!token) {
+            navigate("/");
+        }
+    }, [token]);
 
     React.useEffect(() => {
         if (!isMobileOpen) return;
@@ -146,12 +157,7 @@ export default function Navbar({ children }: NavbarProps) {
     const content = children ?? <Outlet />;
 
     const handleLogout = () => {
-        setIsMobileOpen(false);
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-
+        sessionStorage.clear();
         navigate("/");
     };
 
@@ -274,11 +280,11 @@ export default function Navbar({ children }: NavbarProps) {
                 <div className="appSidebarFooter" aria-label="Sidebar footer">
                     <div className="appSidebarFooterLeft">
                         <div className="appAvatar" aria-hidden="true">
-                            <span className="appAvatarText">U</span>
+                            <span className="appAvatarText">{username.charAt(0).toUpperCase()}</span>
                         </div>
                         <div className="appUserMeta">
-                            <div className="appUserName">User</div>
-                            <div className="appUserRole">Admin</div>
+                            <div className="appUserName">{username}</div>
+                            <div className="appUserRole">{userType}</div>
                         </div>
                     </div>
 
@@ -309,7 +315,7 @@ export default function Navbar({ children }: NavbarProps) {
 
                     <button type="button" className="appTopbarAvatarBtn" aria-label="Account">
                         <div className="appAvatar" aria-hidden="true">
-                            <span className="appAvatarText">U</span>
+                            <span className="appAvatarText">{username.charAt(0).toUpperCase()}</span>
                         </div>
                     </button>
                 </header>

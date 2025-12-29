@@ -164,7 +164,11 @@ export default function Login() {
         };
 
         try {
-            await loginUser(loginData);
+            const res = await loginUser(loginData);
+            sessionStorage.setItem('jwtToken', res.data.token);
+            sessionStorage.setItem('userId', res.data.id);
+            sessionStorage.setItem('userName', res.data.username);
+            sessionStorage.setItem('userType', res.data.userType === 1 ? 'Student' : 'Teacher');
             setTimeout(() => {
                 setIsLoading(false);
                 showSuccess('Logged in successfully.');

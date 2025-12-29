@@ -8,7 +8,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/posts")]
-//[Authorize]
+[Authorize]
 public class PostController : ControllerBase
 {
     private readonly IMediator _mediator;

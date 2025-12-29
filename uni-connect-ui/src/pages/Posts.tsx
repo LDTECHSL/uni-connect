@@ -106,11 +106,13 @@ export default function Posts() {
         { open: false, postId: null, images: [], index: 0 }
     );
 
+    const token = sessionStorage.getItem('jwtToken') || '';
+
     const handleGetPosts = async () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await getAllPosts();
+            const response = await getAllPosts(token);
             const list = safeArrayFromDotNet<PostResponse>(response.data);
             setPosts(list);
         } catch (error) {
@@ -236,7 +238,7 @@ export default function Posts() {
                 category: createCategory,
                 userId: Number.isFinite(userId) ? userId : undefined,
                 images: createFiles,
-            });
+            }, token);
 
             showSuccess("Post created");
             setCreateOpen(false);
