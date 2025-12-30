@@ -262,13 +262,12 @@ export default function Posts() {
         try {
             setCreateSubmitting(true);
 
-            const userIdRaw = localStorage.getItem("uni-connect:userId") ?? localStorage.getItem("userId");
-            const userId = userIdRaw ? Number(userIdRaw) : undefined;
+            const userId = sessionStorage.getItem("userId") || ""
 
             await createPost({
                 caption: createCaption.trim() || undefined,
                 category: createCategory,
-                userId: Number.isFinite(userId) ? userId : undefined,
+                userId: Number.isFinite(Number(userId)) ? Number(userId) : undefined,
                 images: createFiles,
             }, token);
 
