@@ -201,6 +201,7 @@
 
 .modalPanel {
 	width: min(980px, 100%);
+	height: min(86vh, 900px);
 	max-height: min(86vh, 900px);
 	background: var(--surface);
 	border: 1px solid var(--border);
@@ -324,13 +325,13 @@
 
 .modalStage {
 	flex: 1;
+	min-height: 0;
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	padding: 12px;
-	overflow: auto;
-
+	overflow: hidden;
 }
 
 .modalImage {
