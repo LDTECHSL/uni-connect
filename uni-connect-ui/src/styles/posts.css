@@ -214,7 +214,7 @@
 .createModalPanel {
 	width: min(720px, 100%);
 	max-height: min(86vh, 900px);
-	background: var(--surface);
+	background-color: white;
 	border: 1px solid var(--border);
 	border-radius: var(--radius-md);
 	overflow: hidden;
@@ -231,6 +231,7 @@
 	display: grid;
 	gap: 10px;
 	overflow: auto;
+	background-color: white;
 }
 
 .createLabel {
@@ -243,7 +244,6 @@
 	width: 100%;
 	border: 1px solid var(--border);
 	border-radius: var(--radius-sm);
-	background: var(--surface);
 	padding: 10px 12px;
 }
 

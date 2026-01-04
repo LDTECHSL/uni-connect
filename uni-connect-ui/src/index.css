@@ -23,7 +23,7 @@
 
 	--brand: #f97316;
 	--brand-contrast: #0a0a0a;
-	--brand-soft: color-mix(in srgb, var(--brand) 18%, transparent);
+	--brand-soft: color-mix(in srgb, var(--brand) 68%, transparent);
 
 	/* Focus */
 	--focus-ring: var(--brand);

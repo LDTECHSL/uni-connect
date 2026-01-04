@@ -453,7 +453,7 @@ export default function Posts() {
                             Image {modal.images.length === 0 ? 0 : modal.index + 1} of {modal.images.length}
                         </div>
                         <button type="button" onClick={closeModal} className="modalClose">
-                            Close
+                            x
                         </button>
                     </div>
 
@@ -490,7 +490,7 @@ export default function Posts() {
                     <div className="modalHeader">
                         <div className="createModalTitle">Create Post</div>
                         <button type="button" onClick={closeCreate} className="modalClose" disabled={createSubmitting}>
-                            Close
+                            x
                         </button>
                     </div>
 
