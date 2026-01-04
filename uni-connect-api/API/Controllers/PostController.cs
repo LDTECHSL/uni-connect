@@ -49,10 +49,10 @@ public class PostController : ControllerBase
         return Ok(res);
     }
     
-    [HttpPut("{id}/user/{userId}")]
-    public async Task<IActionResult> UpdatePost(int id, int userId)
+    [HttpPut("{id}/user/{userId}/{type}")]
+    public async Task<IActionResult> UpdatePost(int id, int userId, string type)
     {
-        var res = await _mediator.Send(new UpdatePost() { PostId = id, UserId = userId });
+        var res = await _mediator.Send(new UpdatePost() { PostId = id, UserId = userId, Type = type });
         return Ok(res);
     }
 }
