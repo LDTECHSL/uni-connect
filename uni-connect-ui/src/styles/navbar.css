@@ -119,14 +119,10 @@
 	border: 1px solid transparent;
 }
 
-.appNavLink:hover {
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
-	text-decoration: none;
-}
-
 .appNavLinkActive {
 	border-color: var(--border);
 	background: var(--brand-soft);
+	color: white;
 }
 
 .appNavIcon {
@@ -136,6 +132,12 @@
 	height: 40px;
 	color: color-mix(in srgb, var(--fg) 92%, transparent);
 }
+
+.appNavLinkActive .appNavIcon {
+	color: white;
+}
+
+
 
 .appNavLabel {
 	font-weight: 700;

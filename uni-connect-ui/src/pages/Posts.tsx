@@ -393,7 +393,7 @@ export default function Posts() {
 
                         {post.category && (
                             <div className="categoryRow">
-                                <span className="categoryPill">{post.category}</span>
+                                <span className="categoryPill">#{post.category}</span>
                             </div>
                         )}
 
