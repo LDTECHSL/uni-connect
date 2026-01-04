@@ -33,6 +33,8 @@ builder.Services.AddControllers();
 var connectionString = builder.Configuration.GetConnectionString("CoreConnection");
 builder.Services.AddDbContext<CoreDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Map the ICoreDbContext interface to the CoreDbContext implementation so MediatR handlers can resolve it
 builder.Services.AddScoped<ICoreDbContext>(provider => provider.GetRequiredService<CoreDbContext>());
