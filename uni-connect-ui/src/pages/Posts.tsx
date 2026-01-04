@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPost, getAllPosts } from "../services/post-api";
+import { createPost, getAllPosts, savePost } from "../services/post-api";
 import "../styles/posts.css";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -281,7 +281,18 @@ export default function Posts() {
             setCreateSubmitting(false);
         }
     };
-    
+
+    const handleSavePost = async (postId: number) => {
+        try {
+            const userId = sessionStorage.getItem("userId") || "";
+            await savePost(postId, Number(userId), "Add", token);
+            showSuccess("Post saved");
+        } catch (e: any) {
+            const message = e?.response?.data?.Message || e?.message || "Failed to save post";
+            showError(message);
+        }
+    };
+
   return (
     <div className="postsPage">
         <div className="postsHeader">
@@ -376,7 +387,6 @@ export default function Posts() {
                 const captionText = shouldTruncateCaption && !isCaptionExpanded ? `${caption.slice(0, captionLimit)}…` : caption;
 
                 const imagesGridClass = displayImages.length === 1 ? "imagesGrid imagesGridOne" : "imagesGrid";
-                const saveBtnClass = isSaved ? "saveBtn saveBtnSaved" : "saveBtn";
 
                 return (
                     <div key={post.id} className="postsCard">
@@ -386,8 +396,8 @@ export default function Posts() {
                                 <div className="postsMuted">{formatDate(post.createdAt)}</div>
                             </div>
 
-                            <button type="button" onClick={() => toggleSave(post.id)} className={saveBtnClass} aria-pressed={isSaved}>
-                                {isSaved ? "Saved" : "Save"}
+                            <button type="button" onClick={() => handleSavePost(post.id)} className="saveBtn" aria-pressed={isSaved}>
+                                Save to Favourites
                             </button>
                         </div>
 

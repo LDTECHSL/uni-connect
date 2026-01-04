@@ -40,3 +40,30 @@ export const createPost = async (data: any, token: string) => {
         throw error;
     }
 };
+
+export const deletePost = async (postId: number, userId: number, token: string) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${postId}/user/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
+export const savePost = async (postId: number, userId: number, type: string, token: string) => {
+    try {
+        const response = await axios.put(`${API_URL}/${postId}/user/${userId}/${type}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
