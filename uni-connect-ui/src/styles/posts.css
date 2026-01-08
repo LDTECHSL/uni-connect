@@ -51,7 +51,7 @@
 	align-items: center;
 	gap: 6px;
 	border: 1px solid var(--border);
-	background: var(--brand-soft);
+	background: var(--brand);
 	border-radius: var(--radius-sm);
 	color: white;
 	padding: 8px 12px;
@@ -59,6 +59,7 @@
 
 .postsTitle {
 	margin: 0;
+	color: black;
 }
 
 .postsButton {
@@ -102,6 +103,7 @@
 
 .postUserName {
 	font-weight: 600;
+	color: rgb(0, 0, 0);
 }
 
 .saveBtn {
@@ -135,6 +137,7 @@
 
 .captionText {
 	white-space: pre-wrap;
+	color: grey;
 }
 
 .captionToggle {
@@ -228,6 +231,7 @@
 
 .createModalTitle {
 	font-weight: 700;
+	color: black;
 }
 
 .createModalBody {
@@ -257,6 +261,7 @@
 
 .createFile {
 	width: 100%;
+	color: gray;
 }
 
 .createHint {
