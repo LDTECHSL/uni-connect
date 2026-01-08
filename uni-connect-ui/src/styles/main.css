@@ -87,6 +87,7 @@
 	font-weight: 800;
 	letter-spacing: -0.4px;
 	text-align: center;
+	color: black;
 }
 
 .loginSub {
@@ -112,6 +113,7 @@
 .fieldLabel {
 	font-size: var(--text-sm);
 	font-weight: 600;
+	color: black;
 }
 
 .inputWrap {
@@ -171,8 +173,8 @@
 	height: 46px;
 	border-radius: 999px;
 	border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
-	background: color-mix(in srgb, var(--fg) 92%, transparent);
-	color: color-mix(in srgb, var(--bg) 94%, transparent);
+	background-color: #0a0a0a;
+	color: white;
 	font-weight: 700;
 	letter-spacing: 0.2px;
 	display: flex;

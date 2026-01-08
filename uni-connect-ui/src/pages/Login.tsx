@@ -284,8 +284,8 @@ export default function Login() {
                         </form>
 
                         <p className="legal">
-                            By registering, you accept UniConnect <a href="#tos">Terms</a>{' '}
-                            and <a href="#privacy">Privacy policy</a>.
+                            By registering, you accept UniConnect <a href="#tos" style={{color: "gray"}}>Terms</a>{' '}
+                            and <a href="#privacy" style={{color: "gray"}}>Privacy policy</a>.
                         </p>
                     </div>
                 )}
