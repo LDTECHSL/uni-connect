@@ -5,7 +5,7 @@
 .appFrame {
 	min-height: 100vh;
 	display: flex;
-	background: var(--bg);
+	background-color: rgb(222, 222, 223);
 	color: var(--fg);
 }
 
@@ -86,12 +86,7 @@
 	border-radius: 10px;
 	border: 1px solid var(--border);
 	background: transparent;
-	color: var(--fg);
-}
-
-.appIconBtn:hover {
-	background: var(--bg-88);
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	color: #0a0a0a !important;
 }
 
 .appNav {
@@ -116,13 +111,13 @@
 	padding: 0 10px;
 	border-radius: 12px;
 	text-decoration: none;
-	color: var(--fg);
+	color: #0a0a0a;
 	border: 1px solid transparent;
 }
 
 .appNavLinkActive {
 	border-color: var(--border);
-	background: var(--brand-soft);
+	background: var(--brand);
 	color: white;
 }
 
@@ -131,8 +126,7 @@
 	place-items: center;
 	width: 40px;
 	height: 40px;
-	color: var(--fg-92);
-	color: color-mix(in srgb, var(--fg) 92%, transparent);
+	color: #0a0a0a;
 }
 
 .appNavLinkActive .appNavIcon {
@@ -383,13 +377,14 @@
 	height: 40px;
 	border-radius: 999px;
 	border: 1px solid var(--border);
-	background: var(--brand-soft);
+	background: var(--brand);
 	display: grid;
 	place-items: center;
 }
 
 .appAvatarText {
 	font-weight: 900;
+	color: white;
 }
 
 .appUserMeta {
@@ -402,6 +397,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	color: black;
 }
 
 .appUserRole {
