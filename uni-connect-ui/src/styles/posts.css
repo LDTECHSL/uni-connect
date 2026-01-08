@@ -114,6 +114,14 @@
 	white-space: nowrap;
 }
 
+.deleteBtn {
+	border: 1px solid var(--border);
+	background-color: #ad0407;
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+	white-space: nowrap;
+}
+
 .saveBtnSaved {
 	background: var(--brand-soft);
 }

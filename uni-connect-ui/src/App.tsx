@@ -4,6 +4,7 @@ import Toast from "./components/Toast"
 import Navbar from "./layouts/Navbar"
 import Dashboard from "./pages/Dashboard"
 import Posts from "./pages/Posts"
+import MyPosts from "./pages/MyPosts"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/app" element={<Navbar />}>
           <Route index element={<Dashboard />} />
           <Route path="posts" element={<Posts />} />
+          <Route path="myposts" element={<MyPosts />} />
         </Route>
       </Routes>
     </>
