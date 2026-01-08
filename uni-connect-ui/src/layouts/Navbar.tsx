@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
-import { AssignmentInd, Home, PostAdd, PowerSettingsNew } from "@mui/icons-material";
+import { AssignmentInd, Favorite, Home, PostAdd, PowerSettingsNew } from "@mui/icons-material";
 
 type NavbarProps = {
     children?: React.ReactNode;
@@ -68,7 +68,8 @@ function IconChevronDown(props: React.SVGProps<SVGSVGElement>) {
 const NAV_ROOT: NavLeaf[] = [
     { to: "/app", icon: <Home />, label: "Dashboard" },
     { to: "/app/posts", icon: <PostAdd />, label: "Posts" },
-    { to: "/app/myposts", icon: <AssignmentInd />, label: "My Posts" }
+    { to: "/app/myposts", icon: <AssignmentInd />, label: "My Posts" },
+    { to: "/app/favouriteposts", icon: <Favorite />, label: "Favourite Posts" },
 ];
 
 const NAV_GROUPS: NavGroup[] = [

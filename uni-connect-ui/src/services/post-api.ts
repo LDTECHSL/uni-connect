@@ -29,6 +29,19 @@ export const getPostsByUser = async (userId: number, token: string) => {
     }
 };
 
+export const getSavedPostsByUser = async (userId: number, token: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/save/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const createPost = async (data: any, token: string) => {
     try {
         const form = new FormData();

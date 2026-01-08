@@ -5,6 +5,7 @@ import Navbar from "./layouts/Navbar"
 import Dashboard from "./pages/Dashboard"
 import Posts from "./pages/Posts"
 import MyPosts from "./pages/MyPosts"
+import FavouritePosts from "./pages/FavouritePosts"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="posts" element={<Posts />} />
           <Route path="myposts" element={<MyPosts />} />
+          <Route path="favouriteposts" element={<FavouritePosts />} />
         </Route>
       </Routes>
     </>
