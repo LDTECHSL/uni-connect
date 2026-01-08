@@ -385,6 +385,7 @@ export default function FavouritePosts() {
                     <div key={post.id} className="postsCard">
                         <div className="postTopRow">
                             <div>
+                                <div className="postUserName">{post.userName ?? "Unknown"}</div>
                                 <div className="postsMuted">{formatDate(post.createdAt)}</div>
                             </div>
                              <button type="button" onClick={() => handleUnsavePost(post.id)} className="deleteBtn">

@@ -18,7 +18,10 @@ public class GetSavedPostsHandler(IApplicationDbContext dbContext)
             .AsNoTracking()
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync(cancellationToken);
-
+        var userIds = allPosts.Select(p => p.UserId).Distinct().ToList();
+        var users = await dbContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToDictionaryAsync(u => u.Id, u => u.Username, cancellationToken);
         var posts = allPosts
             .Where(p => p.UserIds != null && p.UserIds.Contains(request.UserId))
             .Select(p => new SavedPostResponse
@@ -28,7 +31,8 @@ public class GetSavedPostsHandler(IApplicationDbContext dbContext)
                 Category = p.Category.HasValue ? p.Category.Value.ToString() : null,
                 Images = p.Images,
                 UserId = p.UserId,
-                CreatedAt = p.CreatedAt
+                CreatedAt = p.CreatedAt,
+                UserName = p.UserId.HasValue && users.ContainsKey(p.UserId.Value) ? users[p.UserId.Value] : null
             })
             .ToList();
 
@@ -44,4 +48,5 @@ public class SavedPostResponse
     public byte[][]? Images { get; set; }
     public int? UserId { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? UserName { get; set; }
 }
