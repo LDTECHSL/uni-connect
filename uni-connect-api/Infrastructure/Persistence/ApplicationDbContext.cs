@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Domain.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -10,16 +11,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
     
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        // Apply configurations from the current assembly
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    }
-    
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return await base.SaveChangesAsync(cancellationToken);
-    }
+    public DbSet<Users> Users { get; set; }
+    public DbSet<Posts> Posts { get; set; }
 }

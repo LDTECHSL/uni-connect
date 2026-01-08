@@ -25,7 +25,7 @@ public class GetCoreUserHandler : IRequestHandler<GetCoreUser, object>
 
         if (coreUser == null)
         {
-            throw new NotFoundException($"Core user with email '{request.Email}' not found.");
+            throw new NotFoundException($"Core user not found.");
         }
 
         // Map enum name and numeric value for the client
@@ -33,7 +33,9 @@ public class GetCoreUserHandler : IRequestHandler<GetCoreUser, object>
         {
             coreUser.Id,
             coreUser.Email,
-            UserTypeName = coreUser.UserType?.ToString()
+            UserTypeName = coreUser.UserType?.ToString(),
+            coreUser.Username,
+            coreUser.Gender
         };
 
         return result;
