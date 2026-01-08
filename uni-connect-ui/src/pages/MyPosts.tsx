@@ -120,7 +120,7 @@ export default function MyPosts() {
             setPosts(list);
         } catch (error) {
             setPosts([]);
-            setError("Failed to load posts");
+            setError("No posts found.");
         } finally {
             setLoading(false);
         }
