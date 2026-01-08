@@ -179,6 +179,7 @@
 	inset: 0;
 	border-radius: var(--radius-sm);
 	border: 1px solid var(--border);
+	background: var(--fg-45);
 	background: color-mix(in srgb, var(--fg) 45%, transparent);
 	display: flex;
 	align-items: center;
@@ -192,6 +193,7 @@
 .modalBackdrop {
 	position: fixed;
 	inset: 0;
+	background: var(--fg-70);
 	background: color-mix(in srgb, var(--fg) 70%, transparent);
 	display: flex;
 	align-items: center;
@@ -290,6 +292,7 @@
 	top: 6px;
 	right: 6px;
 	border: 1px solid var(--border);
+	background: var(--surface-85);
 	background: color-mix(in srgb, var(--surface) 85%, transparent);
 	border-radius: 999px;
 	width: 28px;
@@ -350,6 +353,7 @@
 	top: 50%;
 	transform: translateY(-50%);
 	border: 1px solid var(--border);
+	background: var(--surface-85);
 	background: color-mix(in srgb, var(--surface) 85%, transparent);
 	border-radius: var(--radius-sm);
 	padding: 10px 12px;
