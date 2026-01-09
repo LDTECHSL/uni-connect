@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard"
 import Posts from "./pages/Posts"
 import MyPosts from "./pages/MyPosts"
 import FavouritePosts from "./pages/FavouritePosts"
+import MarketPlace from "./pages/MarketPlace"
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="posts" element={<Posts />} />
           <Route path="myposts" element={<MyPosts />} />
           <Route path="favouriteposts" element={<FavouritePosts />} />
+          <Route path="marketplace" element={<MarketPlace />} />
         </Route>
       </Routes>
     </>
