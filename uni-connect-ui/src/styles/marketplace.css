@@ -70,11 +70,6 @@
 	font-weight: 600;
 	transition: background 0.2s;
 }
-
-.marketPlaceCreateButton:hover {
-	background: var(--brand-dark);
-}
-
 .marketPlaceCard {
 	background-color: white;
 	border: 1px solid var(--border);
@@ -156,11 +151,12 @@
 	gap: 8px;
 	margin-top: 6px;
 	font-size: var(--text-sm);
+    color: gray;
 }
 
 .itemSeller {
 	font-weight: 600;
-	color: var(--fg);
+	color: gray;
 }
 
 .itemDate {
@@ -178,11 +174,12 @@
 	padding: 10px 0;
 	border-top: 1px solid var(--border);
 	border-bottom: 1px solid var(--border);
+    color: gray;
 }
 
 .descriptionText {
 	margin: 0;
-	color: var(--fg);
+	color: gray;
 	font-size: var(--text-sm);
 	line-height: 1.5;
 	white-space: pre-wrap;
@@ -289,7 +286,7 @@
 
 .formLabel {
 	font-weight: 600;
-	color: var(--fg);
+	color: gray;
 	font-size: var(--text-sm);
 }
 
@@ -454,8 +451,8 @@
 	transition: background 0.2s;
 }
 
-.submitButton:hover {
-	background: var(--brand-dark);
+.submitButton:hover{
+    background: var(--brand);
 }
 
 .submitButton:disabled {

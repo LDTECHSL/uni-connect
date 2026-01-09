@@ -10,7 +10,6 @@ public class CreateItem : IRequest<object>
     public string? Description { get; set; }
     public IFormFile[]? Images { get; set; }
     public string? Price { get; set; }
-    public int Quantity { get; set; }
     public int? UserId { get; set; }
 }
 
@@ -39,7 +38,6 @@ public class CreateItemHandler(IApplicationDbContext dbContext) : IRequestHandle
             Description = request.Description,
             Images = imageBytes,
             Price = request.Price,
-            Quantity = request.Quantity,
             UserId = request.UserId,
             CreatedAt = DateTime.UtcNow
         };

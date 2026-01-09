@@ -3,6 +3,7 @@ import "../styles/marketplace.css"
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { showError, showSuccess } from "../components/Toast";
+import { createItem, getAllItems, getItemsByUser } from "../services/marketplace-api";
 
 type ApiByteArray = string | number[];
 
@@ -86,31 +87,21 @@ export default function MarketPlace() {
         try {
             setLoading(true);
             setError(null);
-            // Mock data for now - replace with actual API call
-            const mockItems: MarketplaceItem[] = [
-                {
-                    id: 1,
-                    name: "Used Textbook - Programming 101",
-                    description: "Gently used programming textbook. All pages intact.",
-                    price: 25,
-                    userName: "John Doe",
-                    userId: 1,
-                    createdAt: new Date().toISOString(),
-                    images: []
-                },
-                {
-                    id: 2,
-                    name: "Laptop Stand",
-                    description: "Ergonomic laptop stand for better posture. Perfect condition.",
-                    price: 15,
-                    userName: "Jane Smith",
-                    userId: 2,
-                    createdAt: new Date().toISOString(),
-                    images: []
-                }
-            ];
-            setItems(mockItems);
+            const response = await getAllItems(token);
+            
+            // Handle both direct array and .NET $values wrapper
+            let list: MarketplaceItem[] = [];
+            if (Array.isArray(response.data)) {
+                list = response.data;
+            } else if (response.data && typeof response.data === 'object' && Array.isArray((response.data as any).$values)) {
+                list = (response.data as any).$values;
+            } else {
+                list = safeArrayFromDotNet<MarketplaceItem>(response.data);
+            }
+            
+            setItems(list || []);
         } catch (err) {
+            console.error("Error fetching items:", err);
             setItems([]);
             setError("Failed to load marketplace items");
         } finally {
@@ -185,13 +176,33 @@ export default function MarketPlace() {
 
         try {
             setCreateSubmitting(true);
-            // Mock submission - replace with actual API call
+            const userId = parseInt(sessionStorage.getItem('userId') || '0');
+            
+            const itemData = {
+                title: createName,
+                description: createDescription,
+                price: parseFloat(createPrice),
+                userId: userId,
+                images: createFiles
+            };
+
+            await createItem(itemData, token);
             showSuccess("Item added successfully!");
-            closeCreate();
-            handleGetItems();
+            
+            // Reset form and close modal
+            setCreateName("");
+            setCreateDescription("");
+            setCreatePrice("");
+            setCreateFiles([]);
+            setCreateOpen(false);
+            
+            // Refresh items list
+            setTimeout(() => {
+                handleGetItems();
+            }, 500);
         } catch (err) {
             showError("Failed to add item");
-        } finally {
+            console.error(err);
             setCreateSubmitting(false);
         }
     };
@@ -239,14 +250,21 @@ export default function MarketPlace() {
                 </div>
             )}
 
+            {loading && (
+                <div className="marketPlaceCard marketPlaceCardCenter">
+                    <div className="marketPlaceMuted">Loading items...</div>
+                </div>
+            )}
+
             {!loading && items.length === 0 && !error && (
                 <div className="marketPlaceCard marketPlaceCardCenter">
                     <div className="marketPlaceMuted">No items yet.</div>
                 </div>
             )}
 
-            <div className="marketPlaceList">
-                {visibleItems.map((item) => {
+            {!loading && (
+                <div className="marketPlaceList">
+                    {visibleItems.map((item) => {
                     const rawImages = safeByteArrayFromDotNet(item.images);
                     const displayImage = rawImages.length > 0 ? toImageSrc(rawImages[0]) : null;
                     const description = item.description ?? "";
@@ -273,7 +291,7 @@ export default function MarketPlace() {
                                             <span className="itemDate">{formatDate(item.createdAt)}</span>
                                         </div>
                                     </div>
-                                    <div className="itemPrice">${item.price.toFixed(2)}</div>
+                                    <div className="itemPrice">${item.price}</div>
                                 </div>
 
                                 {description && (
@@ -295,7 +313,8 @@ export default function MarketPlace() {
                         </div>
                     );
                 })}
-            </div>
+                </div>
+            )}
 
             {createOpen && (
                 <div className="createModal">

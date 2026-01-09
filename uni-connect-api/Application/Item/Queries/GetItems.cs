@@ -29,7 +29,6 @@ public class GetItemsHandler(IApplicationDbContext dbContext)
                 Description = i.Description,
                 Images = i.Images,
                 Price = i.Price,
-                Quantity = i.Quantity,
                 UserId = i.UserId,
                 CreatedAt = i.CreatedAt,
                 UserName = i.UserId.HasValue && users.ContainsKey(i.UserId.Value) ? users[i.UserId.Value] : null
@@ -47,7 +46,6 @@ public class ItemResponse
     public string? Description { get; set; }
     public byte[][]? Images { get; set; }
     public string? Price { get; set; }
-    public int Quantity { get; set; }
     public int? UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UserName { get; set; }
