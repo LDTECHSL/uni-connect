@@ -2,8 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "../styles/marketplace.css"
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { showError, showSuccess } from "../components/Toast";
-import { createItem, getAllItems, getItemsByUser } from "../services/marketplace-api";
+import { createItem, deleteItem, getAllItems, getItemsByUser } from "../services/marketplace-api";
 
 type ApiByteArray = string | number[];
 
@@ -80,6 +85,9 @@ export default function MarketPlace() {
     const [createPreviewUrls, setCreatePreviewUrls] = useState<string[]>([]);
     const [createSubmitting, setCreateSubmitting] = useState(false);
     const createFileInputRef = useRef<HTMLInputElement | null>(null);
+    const [menuItemId, setMenuItemId] = useState<number | null>(null);
+    const [imageModal, setImageModal] = useState<{ open: boolean; itemId: number | null; images: string[]; index: number; zoom: number }>
+        ({ open: false, itemId: null, images: [], index: 0, zoom: 1 });
 
     const token = sessionStorage.getItem('jwtToken') || '';
 
@@ -113,11 +121,51 @@ export default function MarketPlace() {
         handleGetItems();
     }, []);
 
+    const handleGetMyItems = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const userId = parseInt(sessionStorage.getItem('userId') || '0');
+            if (userId === 0) {
+                setError("User not found");
+                setItems([]);
+                setLoading(false);
+                return;
+            }
+            
+            const response = await getItemsByUser(userId, token);
+            
+            // Handle both direct array and .NET $values wrapper
+            let list: MarketplaceItem[] = [];
+            if (Array.isArray(response.data)) {
+                list = response.data;
+            } else if (response.data && typeof response.data === 'object' && Array.isArray((response.data as any).$values)) {
+                list = (response.data as any).$values;
+            } else {
+                list = safeArrayFromDotNet<MarketplaceItem>(response.data);
+            }
+            
+            setItems(list || []);
+        } catch (err) {
+            console.error("Error fetching my items:", err);
+            setItems([]);
+            setError("Failed to load your items");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (viewMode === "myItems") {
+            handleGetMyItems();
+        } else {
+            handleGetItems();
+        }
+    }, [viewMode]);
+
     const visibleItems = useMemo(() => {
-        if (viewMode === "all") return items;
-        // Filter for current user's items (would need userId from context)
-        return items.filter((item) => item.userId === parseInt(sessionStorage.getItem('userId') || '0'));
-    }, [items, viewMode]);
+        return items;
+    }, [items]);
 
     useEffect(() => {
         const urls = createFiles.map((file) => URL.createObjectURL(file));
@@ -126,6 +174,18 @@ export default function MarketPlace() {
             for (const url of urls) URL.revokeObjectURL(url);
         };
     }, [createFiles]);
+
+    useEffect(() => {
+        if (menuItemId === null) return;
+        const onMouseDown = (e: MouseEvent) => {
+            const target = e.target as HTMLElement | null;
+            if (!target) return;
+            const menu = target.closest(".itemMenuWrapper");
+            if (!menu) setMenuItemId(null);
+        };
+        window.addEventListener("mousedown", onMouseDown);
+        return () => window.removeEventListener("mousedown", onMouseDown);
+    }, [menuItemId]);
 
     const openCreate = () => {
         setCreateName("");
@@ -212,6 +272,85 @@ export default function MarketPlace() {
         showSuccess(`Opening chat with ${sellerName || 'seller'}...`);
     };
 
+    const handleDeleteItem = async (itemId: number) => {
+
+        if(!window.confirm("Are you sure you want to delete this item?")) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await deleteItem(itemId, token);
+            showSuccess("Item deleted");
+            setMenuItemId(null);
+            if (viewMode === "myItems") {
+                handleGetMyItems();
+            } else {
+                handleGetItems();
+            }
+        } catch (err) {
+            console.error("Delete item failed", err);
+            showError("Failed to delete item");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const openImageModal = (itemId: number, images: string[]) => {
+        if (images.length === 0) return;
+        setImageModal({ open: true, itemId, images, index: 0, zoom: 1 });
+    };
+
+    const closeImageModal = () => {
+        setImageModal({ open: false, itemId: null, images: [], index: 0, zoom: 1 });
+    };
+
+    const prevImage = () => {
+        setImageModal((m) => {
+            if (!m.open || m.images.length === 0) return m;
+            return { ...m, index: (m.index - 1 + m.images.length) % m.images.length, zoom: 1 };
+        });
+    };
+
+    const nextImage = () => {
+        setImageModal((m) => {
+            if (!m.open || m.images.length === 0) return m;
+            return { ...m, index: (m.index + 1) % m.images.length, zoom: 1 };
+        });
+    };
+
+    const zoomIn = () => {
+        setImageModal((m) => {
+            if (!m.open) return m;
+            return { ...m, zoom: Math.min(m.zoom + 0.2, 3) };
+        });
+    };
+
+    const zoomOut = () => {
+        setImageModal((m) => {
+            if (!m.open) return m;
+            return { ...m, zoom: Math.max(m.zoom - 0.2, 0.5) };
+        });
+    };
+
+    const resetZoom = () => {
+        setImageModal((m) => {
+            if (!m.open) return m;
+            return { ...m, zoom: 1 };
+        });
+    };
+
+    useEffect(() => {
+        if (!imageModal.open) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") closeImageModal();
+            if (e.key === "ArrowLeft") prevImage();
+            if (e.key === "ArrowRight") nextImage();
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [imageModal.open]);
+
     return (
         <div className="marketPlacePage">
             <div className="marketPlaceHeader">
@@ -266,7 +405,7 @@ export default function MarketPlace() {
                 <div className="marketPlaceList">
                     {visibleItems.map((item) => {
                     const rawImages = safeByteArrayFromDotNet(item.images);
-                    const displayImage = rawImages.length > 0 ? toImageSrc(rawImages[0]) : null;
+                    const displayImages = rawImages.map((img) => toImageSrc(img));
                     const description = item.description ?? "";
                     const descriptionLimit = 150;
                     const shouldTruncateDesc = description.length > descriptionLimit;
@@ -274,13 +413,24 @@ export default function MarketPlace() {
 
                     return (
                         <div key={item.id} className="marketPlaceCard">
-                            <div className="itemImageWrapper">
-                                {displayImage ? (
-                                    <img src={displayImage} alt={item.name} className="itemImage" />
-                                ) : (
+                            {displayImages.length > 0 ? (
+                                <div className="itemImagesWrapper">
+                                    <button
+                                        type="button"
+                                        className="itemImageButton"
+                                        onClick={() => openImageModal(item.id, displayImages)}
+                                    >
+                                        <img src={displayImages[0]} alt={item.name} className="itemImage" />
+                                        {displayImages.length > 1 && (
+                                            <div className="itemImageCount">{displayImages.length} images</div>
+                                        )}
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="itemImageWrapper">
                                     <div className="itemImagePlaceholder">No Image</div>
-                                )}
-                            </div>
+                                </div>
+                            )}
                             
                             <div className="itemContent">
                                 <div className="itemHeader">
@@ -291,7 +441,34 @@ export default function MarketPlace() {
                                             <span className="itemDate">{formatDate(item.createdAt)}</span>
                                         </div>
                                     </div>
-                                    <div className="itemPrice">${item.price}</div>
+                                    <div className="itemHeaderRight">
+                                        <div className="itemPrice">${item.price}</div>
+                                        {viewMode === "myItems" && (
+                                            <div className="itemMenuWrapper">
+                                                <button
+                                                    type="button"
+                                                    className="itemMenuButton"
+                                                    onClick={() => setMenuItemId((prev) => prev === item.id ? null : item.id)}
+                                                    aria-haspopup="menu"
+                                                    aria-expanded={menuItemId === item.id}
+                                                >
+                                                    <MoreVertIcon fontSize="small" />
+                                                </button>
+                                                {menuItemId === item.id && (
+                                                    <div className="itemMenu" role="menu">
+                                                        <button
+                                                            type="button"
+                                                            className="itemMenuItem itemMenuDelete"
+                                                            onClick={() => handleDeleteItem(item.id)}
+                                                            role="menuitem"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {description && (
@@ -313,6 +490,87 @@ export default function MarketPlace() {
                         </div>
                     );
                 })}
+                </div>
+            )}
+
+            {imageModal.open && imageModal.images.length > 0 && (
+                <div className="imageModal" onClick={closeImageModal}>
+                    <div className="imageModalContent" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            type="button"
+                            className="imageModalCloseBtn"
+                            onClick={closeImageModal}
+                            aria-label="Close image viewer"
+                        >
+                            <CloseIcon />
+                        </button>
+
+                        <div className="imageModalViewer">
+                            <div className="imageContainer" style={{ transform: `scale(${imageModal.zoom})` }}>
+                                <img
+                                    src={imageModal.images[imageModal.index]}
+                                    alt={`Image ${imageModal.index + 1}`}
+                                    className="modalImage"
+                                />
+                            </div>
+
+                            <div className="imageModalControls">
+                                <button
+                                    type="button"
+                                    className="zoomButton"
+                                    onClick={zoomOut}
+                                    title="Zoom out"
+                                    aria-label="Zoom out"
+                                >
+                                    <ZoomOutIcon />
+                                </button>
+                                <span className="zoomLevel">{(imageModal.zoom * 100).toFixed(0)}%</span>
+                                <button
+                                    type="button"
+                                    className="zoomButton"
+                                    onClick={zoomIn}
+                                    title="Zoom in"
+                                    aria-label="Zoom in"
+                                >
+                                    <ZoomInIcon />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="zoomButton"
+                                    onClick={resetZoom}
+                                    title="Reset zoom"
+                                    aria-label="Reset zoom"
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        {imageModal.images.length > 1 && (
+                            <>
+                                <button
+                                    type="button"
+                                    className="imagePrevBtn"
+                                    onClick={prevImage}
+                                    aria-label="Previous image"
+                                >
+                                    <ChevronLeftIcon />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="imageNextBtn"
+                                    onClick={nextImage}
+                                    aria-label="Next image"
+                                >
+                                    <ChevronRightIcon />
+                                </button>
+
+                                <div className="imageCounter">
+                                    {imageModal.index + 1} / {imageModal.images.length}
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             )}
 

@@ -31,6 +31,14 @@ public class ItemController : ControllerBase
         var res = await _mediator.Send(new GetItems());
         return Ok(res);
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetItemsByUser(int id)
+    {
+        var query = new GetItemsByUser() { UserId = id };
+        var res = await _mediator.Send(query);
+        return Ok(res);
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItem(int id)

@@ -106,11 +106,60 @@
 	background: var(--surface);
 }
 
+.itemImagesWrapper {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	overflow: hidden;
+	margin-bottom: 12px;
+	background: var(--surface);
+	position: relative;
+}
+
+.itemImageButton {
+	width: 100%;
+	height: 100%;
+	border: none;
+	padding: 0;
+	background: transparent;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.itemImageButton:hover .itemImage {
+	transform: scale(1.05);
+}
+
+.itemImageButton:hover .itemImageCount {
+	opacity: 1;
+}
+
+.itemImageCount {
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	background: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 6px 10px;
+	border-radius: var(--radius-sm);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
 .itemImage {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	display: block;
+}
+.itemHeaderRight {
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 
 .itemImagePlaceholder {
@@ -122,6 +171,54 @@
 	background: var(--border);
 	color: var(--muted);
 	font-size: var(--text-sm);
+}
+
+.itemMenuWrapper {
+	position: relative;
+}
+
+.itemMenuButton {
+	border: 1px solid var(--border);
+	background: var(--surface);
+	border-radius: var(--radius-sm);
+	padding: 6px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.itemMenuButton:hover {
+	background: var(--brand-soft);
+}
+
+.itemMenu {
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	min-width: 140px;
+	background: white;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	z-index: 20;
+}
+
+.itemMenuItem {
+	width: 100%;
+	text-align: left;
+	border: none;
+	background: transparent;
+	padding: 10px 12px;
+	cursor: pointer;
+}
+
+.itemMenuItem:hover {
+	background: var(--brand-soft);
+}
+
+.itemMenuDelete {
+	color: #ad0407;
 }
 
 .itemContent {
@@ -206,6 +303,163 @@
 .chatButton:hover {
 	background: var(--brand);
 	color: white;
+}
+
+/* Image Modal Styles */
+.imageModal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.9);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 16px;
+}
+
+.imageModalContent {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	max-width: 1000px;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.imageModalCloseBtn {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	border: none;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	padding: 8px;
+	cursor: pointer;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1001;
+	transition: background 0.2s;
+}
+
+.imageModalCloseBtn:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+.imageModalViewer {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+}
+
+.imageContainer {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+	max-width: 900px;
+	max-height: 70vh;
+	transition: transform 0.2s ease-out;
+}
+
+.modalImage {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	border-radius: var(--radius-sm);
+}
+
+.imageModalControls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background: rgba(255, 255, 255, 0.1);
+	padding: 12px 16px;
+	border-radius: var(--radius-sm);
+	backdrop-filter: blur(4px);
+}
+
+.zoomButton {
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
+	padding: 8px;
+	cursor: pointer;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s;
+	font-weight: 600;
+	font-size: var(--text-sm);
+}
+
+.zoomButton:hover {
+	background: rgba(255, 255, 255, 0.2);
+	border-color: rgba(255, 255, 255, 0.5);
+}
+
+.zoomLevel {
+	color: white;
+	font-weight: 600;
+	min-width: 60px;
+	text-align: center;
+	font-size: var(--text-sm);
+}
+
+.imagePrevBtn,
+.imageNextBtn {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	border: none;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	padding: 12px;
+	cursor: pointer;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+	z-index: 999;
+}
+
+.imagePrevBtn:hover,
+.imageNextBtn:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+.imagePrevBtn {
+	left: 16px;
+}
+
+.imageNextBtn {
+	right: 16px;
+}
+
+.imageCounter {
+	position: absolute;
+	bottom: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+	padding: 8px 16px;
+	border-radius: var(--radius-sm);
+	font-weight: 600;
+	font-size: var(--text-sm);
+	backdrop-filter: blur(4px);
 }
 
 /* Modal Styles */

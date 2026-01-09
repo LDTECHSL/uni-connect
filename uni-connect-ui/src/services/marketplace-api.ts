@@ -54,3 +54,16 @@ export const createItem = async (itemData: any, token: string) => {
         throw error;
     }
 }
+
+export const deleteItem = async (itemId: number, token: string) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${itemId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
