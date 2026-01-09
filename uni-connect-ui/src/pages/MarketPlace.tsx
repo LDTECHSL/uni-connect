@@ -84,6 +84,7 @@ export default function MarketPlace() {
     const [createFiles, setCreateFiles] = useState<File[]>([]);
     const [createPreviewUrls, setCreatePreviewUrls] = useState<string[]>([]);
     const [createSubmitting, setCreateSubmitting] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
     const createFileInputRef = useRef<HTMLInputElement | null>(null);
     const [menuItemId, setMenuItemId] = useState<number | null>(null);
     const [imageModal, setImageModal] = useState<{ open: boolean; itemId: number | null; images: string[]; index: number; zoom: number }>
@@ -164,8 +165,15 @@ export default function MarketPlace() {
     }, [viewMode]);
 
     const visibleItems = useMemo(() => {
-        return items;
-    }, [items]);
+        const term = searchTerm.trim().toLowerCase();
+        if (!term) return items;
+
+        return items.filter((item) => {
+            const name = (item.name ?? "").toLowerCase();
+            const desc = (item.description ?? "").toLowerCase();
+            return name.includes(term) || desc.includes(term);
+        });
+    }, [items, searchTerm]);
 
     useEffect(() => {
         const urls = createFiles.map((file) => URL.createObjectURL(file));
@@ -355,6 +363,17 @@ export default function MarketPlace() {
         <div className="marketPlacePage">
             <div className="marketPlaceHeader">
                 <h2 className="marketPlaceTitle">MarketPlace</h2>
+                <div className="marketPlaceSearch">
+                    <input
+                        type="search"
+                        className="marketPlaceSearchInput"
+                        placeholder="Search by name or description"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        aria-label="Search marketplace items"
+                        disabled={loading}
+                    />
+                </div>
                 <div className="marketPlaceToolbarActions">
                     <div className="marketPlaceViewToggle">
                         <button
