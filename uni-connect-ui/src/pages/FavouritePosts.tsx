@@ -387,7 +387,7 @@ export default function FavouritePosts() {
                             <div>
                                 <div className="postUserName">{post.userName ?? "Unknown"}</div>
                                 <div className="postsMuted">{formatDate(post.createdAt)}</div>
-                            </div>
+                             </div>
                              <button type="button" onClick={() => handleUnsavePost(post.id)} className="deleteBtn">
                                 Unsave
                             </button>
