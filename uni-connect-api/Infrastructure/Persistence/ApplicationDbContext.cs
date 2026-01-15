@@ -14,4 +14,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Users> Users { get; set; }
     public DbSet<Posts> Posts { get; set; }
     public DbSet<Items> Items { get; set; }
+    public DbSet<Conversations> Conversations { get; set; }
+    public DbSet<ChatMessages> ChatMessages { get; set; }
 }
