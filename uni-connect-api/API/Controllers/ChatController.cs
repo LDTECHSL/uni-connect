@@ -36,6 +36,13 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("conversations/{userId}")]
+        public async Task<IActionResult> GetConversations([FromRoute] int userId)
+        {
+            var result = await _mediator.Send(new GetChatsQuery() { UserId = userId });
+            return Ok(result);
+        }
+
         [HttpGet("messages/{conversationId}")]
         public async Task<IActionResult> GetMessages(int conversationId)
         {
