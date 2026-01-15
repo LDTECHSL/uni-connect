@@ -28,3 +28,30 @@ export const getMessagesByChat = async (token: string, chatId: number) => {
         throw error;
     }
 }
+
+export const sendMessage = async (token: string, data: any) => {
+    try {
+        const response = await axios.post(`${API_URL}/send`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const markMessagesAsRead = async (token: string, body:any) => {
+    try {
+        const response = await axios.post(`${API_URL}/read`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
