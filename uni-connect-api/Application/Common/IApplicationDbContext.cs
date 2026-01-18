@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     DbSet<Items> Items { get; set; }
     DbSet<Conversations> Conversations { get; set; }
     DbSet<ChatMessages> ChatMessages { get; set; }
+    DbSet<GroupChat> GroupChat { get; set; }
     
     #region Methods
 

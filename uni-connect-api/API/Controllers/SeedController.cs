@@ -4,6 +4,7 @@ using Domain.Core;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Domain.System;
 
 namespace API.Controllers;
 
@@ -11,11 +12,14 @@ namespace API.Controllers;
 public class SeedController : ControllerBase
 {
     private readonly CoreDbContext _dbContext;
-    public SeedController(CoreDbContext dbContext)
+    private readonly ApplicationDbContext _appDbContext;
+
+    public SeedController(CoreDbContext dbContext, ApplicationDbContext applicationDbContext)
     {
         _dbContext = dbContext;
+        _appDbContext = applicationDbContext;
     }
-    
+
     [HttpPost("api/seed-database")]
     public async Task<IActionResult> SeedDatabase()
     {
@@ -53,7 +57,8 @@ public class SeedController : ControllerBase
                 // Build a readable name from the email local part (e.g. "alice.smith" -> "Alice Smith")
                 var localPart = sampleEmails[i].Split('@')[0];
                 var nameParts = localPart.Split('.', '_');
-                var displayName = string.Join(" ", nameParts.Select(p => string.IsNullOrWhiteSpace(p) ? p : char.ToUpper(p[0]) + p.Substring(1)));
+                var displayName = string.Join(" ",
+                    nameParts.Select(p => string.IsNullOrWhiteSpace(p) ? p : char.ToUpper(p[0]) + p.Substring(1)));
 
                 users.Add(new CoreUsers
                 {
@@ -86,4 +91,47 @@ public class SeedController : ControllerBase
             });
         }
     }
+
+    [HttpPost("api/seed-group")]
+    public async Task<IActionResult> SeedGroup()
+    {
+        try
+        {
+            // If there are already groups, skip seeding
+            if (await _appDbContext.GroupChat.AnyAsync())
+            {
+                return Ok(new
+                {
+                    StatusCode = "200",
+                    Status = "Skipped",
+                    Message = "Database already contains Groups. Seeding skipped."
+                });
+            }
+
+            var groups = new GroupChat()
+            {
+                GroupName = "Community Chat"
+            };
+
+            await _appDbContext.GroupChat.AddRangeAsync(groups);
+            await _appDbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                StatusCode = "200",
+                Status = "Success",
+                Message = "Database seeded successfully with Groups."
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                StatusCode = "500",
+                Status = "Error",
+                Message = $"An error occurred while seeding the database: {ex.Message}"
+            });
+        }
+    }
+
 }
