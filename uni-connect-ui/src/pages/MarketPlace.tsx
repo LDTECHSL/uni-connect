@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/marketplace.css"
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -67,12 +68,6 @@ function toImageSrc(value: ApiByteArray, mimeType = "image/jpeg"): string {
     return `data:${mimeType};base64,${base64}`;
 }
 
-function formatDate(value: string): string {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleString();
-}
-
 export default function MarketPlace() {
     const [items, setItems] = useState<MarketplaceItem[]>([]);
     const [loading, setLoading] = useState(false);
@@ -93,6 +88,7 @@ export default function MarketPlace() {
 
     const token = sessionStorage.getItem('jwtToken') || '';
     const userId = parseInt(sessionStorage.getItem('userId') || '0');
+    const navigate = useNavigate();
 
     const handleGetItems = async () => {
         try {
@@ -276,20 +272,43 @@ export default function MarketPlace() {
         }
     };
 
-    const handleChatWithSeller = async(itemId: number, sellerId?: any) => {
+    const handleChatWithSeller = async (itemId: number, sellerId?: number | null) => {
         if (!sellerId) {
             showError("Seller information not available");
             return;
         }
 
+        if (!userId || userId === 0) {
+            showError("Please login again to start a chat");
+            return;
+        }
+
+        const item = items.find((i) => i.id === itemId);
+        const initialMessage = item
+            ? `Hi, I'm interested in "${item.name}" (Price: $${item.price}). Is this available?`
+            : "Hi, is this available?";
+
         try {
             const res = await checkChatExists(token, userId, Number(sellerId));
-            if(res.data === true) {
-                window.location.href = `/app/chats`;
+            if (res.data === true) {
+                // Chat exists already; Chats page will resolve the conversationId from participants.
+                navigate("/app/chats", {
+                    state: {
+                        openWithUserId: Number(sellerId),
+                        initialMessage,
+                    },
+                });
             } else {
                 try {
-                    await createChat(token, { user1: userId, user2: Number(sellerId) });
-                    window.location.href = `/app/chats`;
+                    const created = await createChat(token, { user1: userId, user2: Number(sellerId) });
+                    const conversationId = (created.data?.id ?? created.data?.Id) as number | undefined;
+                    navigate("/app/chats", {
+                        state: {
+                            openConversationId: conversationId,
+                            openWithUserId: Number(sellerId),
+                            initialMessage,
+                        },
+                    });
                 } catch (error) {
                     showError("Failed to create chat with seller");
                 }

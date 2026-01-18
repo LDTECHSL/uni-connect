@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import "../styles/chats.css";
 import { getAllChats, getMessagesByChat, sendMessage, markMessagesAsRead } from "../services/chats-api";
 import { Divider } from "@mui/material";
 import { showError } from "../components/Toast";
 
-type User = { id: number; name: string; lastMessage?: string, unreadCount?: number };
 type ChatItem = {
     id: number;
     user1: number;
@@ -27,20 +27,22 @@ type Message = {
     id: number;
 };
 
+type ChatsNavState = {
+    openConversationId?: number;
+    openWithUserId?: number;
+    initialMessage?: string;
+};
+
 type NormalizedFile = {
     fileName: string | null;
     fileType: string | null;
     fileData: number[] | string | null;
 };
 
-const SAMPLE_USERS: User[] = [
-    { id: 1, name: "Alice Johnson", lastMessage: "Hey — are you coming?" },
-    { id: 2, name: "Ben Carter", lastMessage: "Sent the files 👍" },
-    { id: 3, name: "Chloe Park", lastMessage: "Let’s meet at 5pm" },
-    { id: 4, name: "Dinesh Kumar", lastMessage: "Great job on that post" },
-];
-
 export default function Chats() {
+    const location = useLocation();
+    const navState = (location.state as ChatsNavState | null) ?? null;
+
     const [query, setQuery] = useState("");
     const [activeId, setActiveId] = useState<number | null>(null);
     const [chats, setChats] = useState<ChatItem[]>([]);
@@ -63,6 +65,34 @@ export default function Chats() {
     useEffect(() => {
         fetchChats();
     }, []);
+
+    // Prefill composer draft when coming from e.g. Marketplace
+    useEffect(() => {
+        if (navState?.initialMessage && !draft) {
+            setDraft(navState.initialMessage);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navState?.initialMessage]);
+
+    // Auto-open the intended conversation (by id, or by participant match)
+    useEffect(() => {
+        if (!chats || chats.length === 0) return;
+        if (activeId) return;
+
+        if (navState?.openConversationId) {
+            setActiveId(navState.openConversationId);
+            return;
+        }
+
+        if (navState?.openWithUserId) {
+            const me = Number(userId);
+            const other = Number(navState.openWithUserId);
+            const found = chats.find(
+                (c) => (c.user1 === me && c.user2 === other) || (c.user2 === me && c.user1 === other)
+            );
+            if (found) setActiveId(found.id);
+        }
+    }, [chats, navState?.openConversationId, navState?.openWithUserId, activeId, userId]);
 
     const displayChats = useMemo(() => {
         if (chats && chats.length > 0) {
