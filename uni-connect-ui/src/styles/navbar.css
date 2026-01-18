@@ -103,10 +103,10 @@
 }
 
 .appNavLink {
-	display: grid;
-	grid-template-columns: 40px 1fr;
-	align-items: center;
-	gap: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 	height: 42px;
 	padding: 0 10px;
 	border-radius: 12px;
@@ -447,6 +447,49 @@
 
 .appMobileMenuBtn {
 	display: none;
+}
+
+.unreadBadge{
+	min-width: 18px;
+	height: 18px;
+	padding: 0 6px;
+	background-color: red;
+	color: white;
+	font-size: 12px;
+	font-weight: 700;
+	border-radius: 9px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 8px;
+}
+
+/* unread badge on nav item (positioned to the right, vertically centered) */
+.appNavLink .unreadBadge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    min-width: 20px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #fff;
+    background: #e53935;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+/* tighter spacing when sidebar is collapsed */
+.appSidebarCollapsed .appNavLink .unreadBadge {
+    right: 8px;
+    font-size: 10px;
+    min-width: 18px;
+    padding: 1px 4px;
 }
 
 @media (max-width: 900px) {

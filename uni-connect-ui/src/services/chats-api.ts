@@ -55,3 +55,16 @@ export const markMessagesAsRead = async (token: string, body:any) => {
         throw error;
     }
 }
+
+export const getUnreadChatCount = async (token: string, userId: number) => {
+    try {
+        const response = await axios.get(`${API_URL}/unread-count/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

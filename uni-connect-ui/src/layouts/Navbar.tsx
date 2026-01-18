@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
 import { AssignmentInd, Favorite, Forum, Home, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
+import { getUnreadChatCount } from "../services/chats-api";
 
 type NavbarProps = {
     children?: React.ReactNode;
@@ -75,25 +76,6 @@ const NAV_ROOT: NavLeaf[] = [
 ];
 
 const NAV_GROUPS: NavGroup[] = [
-    // {
-    //     id: "courses",
-    //     label: "Courses",
-    //     icon: (p) => <IconBooks {...p} />,
-    //     children: [
-    //         { to: "/app/courses/manage", label: "Manage Course" },
-    //         { to: "/app/courses/new", label: "Add New Course" },
-    //         { to: "/app/courses/category", label: "Course Category" },
-    //         { to: "/app/courses/coupons", label: "Coupons" },
-    //         { to: "/app/courses/bundle", label: "Course Bundle" },
-    //         { to: "/app/courses/subscriptions", label: "Subscription Reports" },
-    //     ],
-    // },
-    // {
-    //     id: "users",
-    //     label: "Users",
-    //     icon: (p) => <IconUsers {...p} />,
-    //     children: [{ to: "/app/users", label: "Users" }],
-    // },
 ];
 
 function isPathInGroup(pathname: string, group: NavGroup) {
@@ -103,11 +85,41 @@ function isPathInGroup(pathname: string, group: NavGroup) {
 export default function Navbar({ children }: NavbarProps) {
     const [isMobileOpen, setIsMobileOpen] = React.useState(false);
     const [isCollapsed, setIsCollapsed] = React.useState(false);
+    const [unreadChatCount, setUnreadChatCount] = React.useState(0);
     const location = useLocation();
     const navigate = useNavigate();
 
     const username = sessionStorage.getItem('userName') || 'User';
     const userType = sessionStorage.getItem('userType') || 'User';
+
+    const handleGetUnreadChatCount = useCallback(async () => {
+        try {
+            const res = await getUnreadChatCount(sessionStorage.getItem('jwtToken') || '', Number(sessionStorage.getItem('userId')));
+            setUnreadChatCount(res.data || 0);
+        } catch {
+            setUnreadChatCount(0);
+        }
+    }, []);
+
+    useEffect(() => {
+        handleGetUnreadChatCount();
+    }, []);
+
+    // call unread-count on any click (debounced)
+    const clickTimerRef = useRef<number | null>(null);
+    useEffect(() => {
+        const onClick = () => {
+            if (clickTimerRef.current) window.clearTimeout(clickTimerRef.current);
+            clickTimerRef.current = window.setTimeout(() => {
+                handleGetUnreadChatCount();
+            }, 250) as unknown as number;
+        };
+        document.addEventListener("click", onClick);
+        return () => {
+            document.removeEventListener("click", onClick);
+            if (clickTimerRef.current) window.clearTimeout(clickTimerRef.current);
+        };
+    }, [handleGetUnreadChatCount]);
 
     const initialOpenGroups = React.useMemo(() => {
         const open = new Set<string>();
@@ -222,6 +234,15 @@ export default function Navbar({ children }: NavbarProps) {
                                     {leaf.icon}
                                 </span>
                                 <span className="appNavLabel">{leaf.label}</span>
+
+                               {leaf.to === "/app/chats" && unreadChatCount > 0 ? (
+                                   <span
+                                       className="unreadBadge"
+                                       aria-label={`${unreadChatCount} unread messages`}
+                                   >
+                                       {unreadChatCount > 99 ? "99+" : unreadChatCount}
+                                   </span>
+                               ) : null}
                             </NavLink>
                         ))}
                     </div>
