@@ -327,9 +327,6 @@
 	transition: all 0.2s;
 }
 
-.chatButton:hover {
-}
-
 /* Image Modal Styles */
 .imageModal {
 	position: fixed;

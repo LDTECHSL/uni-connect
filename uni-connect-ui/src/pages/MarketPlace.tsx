@@ -9,6 +9,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { showError, showSuccess } from "../components/Toast";
 import { createItem, deleteItem, getAllItems, getItemsByUser } from "../services/marketplace-api";
+import { checkChatExists, createChat } from "../services/chats-api";
 
 type ApiByteArray = string | number[];
 
@@ -275,9 +276,27 @@ export default function MarketPlace() {
         }
     };
 
-    const handleChatWithSeller = (itemId: number, sellerName?: string) => {
-        // TODO: Implement chat functionality
-        showSuccess(`Opening chat with ${sellerName || 'seller'}...`);
+    const handleChatWithSeller = async(itemId: number, sellerId?: any) => {
+        if (!sellerId) {
+            showError("Seller information not available");
+            return;
+        }
+
+        try {
+            const res = await checkChatExists(token, userId, Number(sellerId));
+            if(res.data === true) {
+                window.location.href = `/app/chats`;
+            } else {
+                try {
+                    await createChat(token, { user1: userId, user2: Number(sellerId) });
+                    window.location.href = `/app/chats`;
+                } catch (error) {
+                    showError("Failed to create chat with seller");
+                }
+            }
+        } catch (error) {
+            showError("Failed to initiate chat with seller");
+        }
     };
 
     const handleDeleteItem = async (itemId: number) => {
@@ -502,7 +521,7 @@ export default function MarketPlace() {
                                     <button
                                         type="button"
                                         className="chatButton"
-                                        onClick={() => handleChatWithSeller(item.id, item.userName ?? undefined)}
+                                        onClick={() => handleChatWithSeller(item.id, item.userId)}
                                     >
                                         Chat with Seller
                                     </button>

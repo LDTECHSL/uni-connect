@@ -68,3 +68,29 @@ export const getUnreadChatCount = async (token: string, userId: number) => {
         throw error;
     }
 }
+
+export const checkChatExists = async (token: string, userId1: number, userId2: number) => {
+    try {
+        const response = await axios.get(`${API_URL}/check-exists/${userId1}/${userId2}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const createChat = async (token: string, data: any) => {
+    try {
+        const response = await axios.post(`${API_URL}/create-conversation`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

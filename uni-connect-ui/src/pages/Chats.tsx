@@ -74,7 +74,7 @@ export default function Chats() {
                 unreadCount: c.unreadCount,
             }));
         }
-        return SAMPLE_USERS;
+        return [];
     }, [chats]);
 
     const filtered = useMemo(() => {
