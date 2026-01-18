@@ -91,6 +91,7 @@ export default function MarketPlace() {
         ({ open: false, itemId: null, images: [], index: 0, zoom: 1 });
 
     const token = sessionStorage.getItem('jwtToken') || '';
+    const userId = parseInt(sessionStorage.getItem('userId') || '0');
 
     const handleGetItems = async () => {
         try {
@@ -126,7 +127,6 @@ export default function MarketPlace() {
         try {
             setLoading(true);
             setError(null);
-            const userId = parseInt(sessionStorage.getItem('userId') || '0');
             if (userId === 0) {
                 setError("User not found");
                 setItems([]);
@@ -456,13 +456,13 @@ export default function MarketPlace() {
                                     <div>
                                         <h3 className="itemName">{item.name}</h3>
                                         <div className="itemSellerInfo">
-                                            <span className="itemSeller">{item.userName ?? "Unknown"}</span>
-                                            <span className="itemDate">{formatDate(item.createdAt)}</span>
+                                            <span className="itemSeller">{item.userName ?? ""}</span>
+                                            <span className="itemDate">{item.createdAt.slice(0, 10)}</span>
                                         </div>
                                     </div>
                                     <div className="itemHeaderRight">
                                         <div className="itemPrice">${item.price}</div>
-                                        {viewMode === "myItems" && (
+                                        {viewMode === "myItems" && item.userId === userId && (
                                             <div className="itemMenuWrapper">
                                                 <button
                                                     type="button"
@@ -496,7 +496,9 @@ export default function MarketPlace() {
                                     </div>
                                 )}
 
-                                <div className="itemActions">
+                                {
+                                    item.userId !== userId && (
+                                        <div className="itemActions">
                                     <button
                                         type="button"
                                         className="chatButton"
@@ -505,6 +507,10 @@ export default function MarketPlace() {
                                         Chat with Seller
                                     </button>
                                 </div>
+                                    )
+                                }
+
+                                
                             </div>
                         </div>
                     );

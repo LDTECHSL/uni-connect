@@ -318,9 +318,9 @@
 .chatButton {
 	flex: 1;
 	border: 1px solid var(--brand);
-	background: var(--brand-soft);
+	background: var(--brand);
+	color: white;
 	border-radius: var(--radius-sm);
-	color: var(--brand);
 	padding: 10px 12px;
 	font-weight: 600;
 	cursor: pointer;
@@ -328,8 +328,6 @@
 }
 
 .chatButton:hover {
-	background: var(--brand);
-	color: white;
 }
 
 /* Image Modal Styles */

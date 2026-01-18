@@ -56,6 +56,17 @@ namespace API.Controllers
             var result = await _mediator.Send(new GetUnreadChats() { UserId = userId });
             return Ok(result);
         }
+
+        [HttpGet("check-exists/{userAId}/{userBId}")]
+        public async Task<IActionResult> CheckConversationExists(int userAId, int userBId)
+        {
+            var result = await _mediator.Send(new CheckChatExists()
+            {
+                User1Id = userAId,
+                User2Id = userBId
+            });
+            return Ok(result);
+        }
     }
 }
 
