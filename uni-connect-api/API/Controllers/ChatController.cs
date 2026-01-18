@@ -49,6 +49,13 @@ namespace API.Controllers
             var result = await _mediator.Send(new GetMessagesQuery { ConversationId = conversationId });
             return Ok(result);
         }
+        
+        [HttpGet("unread-count/{userId}")]
+        public async Task<IActionResult> GetUnreadChatsCount(int userId)
+        {
+            var result = await _mediator.Send(new GetUnreadChats() { UserId = userId });
+            return Ok(result);
+        }
     }
 }
 
