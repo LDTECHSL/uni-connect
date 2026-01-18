@@ -91,47 +91,4 @@ public class SeedController : ControllerBase
             });
         }
     }
-
-    [HttpPost("api/seed-group")]
-    public async Task<IActionResult> SeedGroup()
-    {
-        try
-        {
-            // If there are already groups, skip seeding
-            if (await _appDbContext.GroupChat.AnyAsync())
-            {
-                return Ok(new
-                {
-                    StatusCode = "200",
-                    Status = "Skipped",
-                    Message = "Database already contains Groups. Seeding skipped."
-                });
-            }
-
-            var groups = new GroupChat()
-            {
-                GroupName = "Community Chat"
-            };
-
-            await _appDbContext.GroupChat.AddRangeAsync(groups);
-            await _appDbContext.SaveChangesAsync();
-
-            return Ok(new
-            {
-                StatusCode = "200",
-                Status = "Success",
-                Message = "Database seeded successfully with Groups."
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                StatusCode = "500",
-                Status = "Error",
-                Message = $"An error occurred while seeding the database: {ex.Message}"
-            });
-        }
-    }
-
 }

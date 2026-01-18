@@ -16,5 +16,4 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Items> Items { get; set; }
     public DbSet<Conversations> Conversations { get; set; }
     public DbSet<ChatMessages> ChatMessages { get; set; }
-    public DbSet<GroupChat> GroupChat { get; set; }
 }
