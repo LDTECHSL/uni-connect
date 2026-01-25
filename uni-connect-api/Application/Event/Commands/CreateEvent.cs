@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.Common.Exceptions;
 using Domain.System;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -20,20 +21,28 @@ public class CreateEventHandler (IApplicationDbContext dbContext) : IRequestHand
 {
     public async Task<object> Handle(CreateEvent request, CancellationToken cancellationToken)
     {
-        var newEvent = new Events()
+        try
         {
-            EventName = request.EventName,
-            EventDate = request.EventDate,
-            EventDescription = request.Description,
-            EventLocation = request.Location,
-            EventThumbnail = request.Thumbnail != null ? await ConvertFileToByteArray(request.Thumbnail) : null,
-            CreatedBy = request.UserId,
-            SpecialNote = request.SpecialNote
-        };
+            var newEvent = new Events()
+            {
+                EventName = request.EventName,
+                EventDate = request.EventDate,
+                EventDescription = request.Description,
+                EventLocation = request.Location,
+                EventThumbnail = request.Thumbnail != null ? await ConvertFileToByteArray(request.Thumbnail) : null,
+                CreatedBy = request.UserId,
+                SpecialNote = request.SpecialNote
+            };  
         
-        dbContext.Events.Add(newEvent);
-        await dbContext.SaveChangesAsync(cancellationToken);
-        return new { Success = true, Message = "Event created successfully", EventId = newEvent.Id };
+            dbContext.Events.Add(newEvent);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return new { Success = true, Message = "Event created successfully", EventId = newEvent.Id };
+        }
+        catch (Exception e)
+        {
+            throw new BadRequestException("Error creating event: " + e.Message);
+        }
+        
     }
 
     private async Task<byte[]> ConvertFileToByteArray(IFormFile file)
