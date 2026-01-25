@@ -172,7 +172,7 @@ export default function Login() {
             setTimeout(() => {
                 setIsLoading(false);
                 showSuccess('Logged in successfully.');
-                navigate('/app');
+                navigate('/app/posts');
             }, 3000);
         } catch (error: any) {
             setIsLoading(false);

@@ -67,7 +67,6 @@ function IconChevronDown(props: React.SVGProps<SVGSVGElement>) {
 }
 
 const NAV_ROOT: NavLeaf[] = [
-    { to: "/app", icon: <Home />, label: "Dashboard" },
     { to: "/app/posts", icon: <PostAdd />, label: "Posts" },
     { to: "/app/myposts", icon: <AssignmentInd />, label: "My Posts" },
     { to: "/app/favouriteposts", icon: <Favorite />, label: "Favourite Posts" },
