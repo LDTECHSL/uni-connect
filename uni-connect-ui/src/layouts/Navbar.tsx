@@ -290,6 +290,11 @@ export default function Navbar({ children }: NavbarProps) {
     const content = children ?? <Outlet />;
 
     const handleLogout = () => {
+
+        if(!window.confirm("Are you sure you want to logout?")) {
+            return;
+        }
+
         sessionStorage.clear();
         navigate("/");
     };
