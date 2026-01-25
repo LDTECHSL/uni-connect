@@ -95,12 +95,12 @@ export default function Posts() {
     const [savedIds, setSavedIds] = useState<number[]>(() => readSavedIds());
     const [expandedCaptionIds, setExpandedCaptionIds] = useState<number[]>([]);
     const [filterOpen, setFilterOpen] = useState(false);
-    const [selectedFilter, setSelectedFilter] = useState<"announcement" | "notes" | "events" | null>(null);
+    const [selectedFilter, setSelectedFilter] = useState<"announcement" | "notes" | "events" | "roommateFinder" | null>(null);
     const filterRef = useRef<HTMLDivElement | null>(null);
 
     const [createOpen, setCreateOpen] = useState(false);
     const [createCaption, setCreateCaption] = useState("");
-    const [createCategory, setCreateCategory] = useState<"Announcement" | "Notes" | "Events" | "">("");
+    const [createCategory, setCreateCategory] = useState<"Announcement" | "Notes" | "Events" | "RoommateFinder" | "">("");
     const [createFiles, setCreateFiles] = useState<File[]>([]);
     const [createPreviewUrls, setCreatePreviewUrls] = useState<string[]>([]);
     const [createSubmitting, setCreateSubmitting] = useState(false);
@@ -143,7 +143,8 @@ export default function Posts() {
         if (!selectedFilter) return "Filter";
         if (selectedFilter === "announcement") return "Filter: Announcement";
         if (selectedFilter === "notes") return "Filter: Notes";
-        return "Filter: Events";
+        if (selectedFilter === "events") return "Filter: Events";
+        if (selectedFilter === "roommateFinder") return "Filter: Roommate Finder";
     }, [selectedFilter]);
 
     useEffect(() => {
@@ -345,6 +346,17 @@ export default function Posts() {
                             >
                                 Events
                             </button>
+                            <button
+                                type="button"
+                                role="menuitem"
+                                className="postsFilterItem"
+                                onClick={() => {
+                                    setSelectedFilter("roommateFinder");
+                                    setFilterOpen(false);
+                                }}
+                            >
+                                Roommate Finder
+                            </button>
                         </div>
                     )}
                 </div>
@@ -519,6 +531,7 @@ export default function Posts() {
                             <option value="Announcement">Announcement</option>
                             <option value="Notes">Notes</option>
                             <option value="Events">Events</option>
+                            <option value="RoommateFinder">Roommate Finder</option>
                         </select>
 
                         <label className="createLabel" htmlFor="postCaption">
