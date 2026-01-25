@@ -8,6 +8,7 @@ import MyPosts from "./pages/MyPosts"
 import FavouritePosts from "./pages/FavouritePosts"
 import MarketPlace from "./pages/MarketPlace"
 import Chats from "./pages/Chats"
+import Events from "./pages/Events"
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="favouriteposts" element={<FavouritePosts />} />
           <Route path="marketplace" element={<MarketPlace />} />
           <Route path="chats" element={<Chats />} />
+          <Route path="events" element={<Events />} />
         </Route>
       </Routes>
     </>

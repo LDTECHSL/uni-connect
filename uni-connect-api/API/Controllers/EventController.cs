@@ -12,7 +12,7 @@ namespace API.Controllers;
 public class EventController (IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateEvent([FromBody] CreateEvent command)
+    public async Task<IActionResult> CreateEvent([FromForm] CreateEvent command)
     {
         var result = await mediator.Send(command);
         return Ok(result);

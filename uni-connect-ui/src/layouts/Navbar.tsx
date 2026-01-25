@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
-import { AssignmentInd, Favorite, Forum, Home, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
+import { AssignmentInd, Event, Favorite, Forum, Home, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
 import { getUnreadChatCount } from "../services/chats-api";
 
 type NavbarProps = {
@@ -73,6 +73,7 @@ const NAV_ROOT: NavLeaf[] = [
     { to: "/app/favouriteposts", icon: <Favorite />, label: "Favourite Posts" },
     {to: "/app/marketplace", icon: <Storefront />, label: "Market Place" },
     {to: "/app/chats", icon: <Forum />, label: "Chats" },
+    {to: "/app/events", icon: <Event />, label: "Events" },
 ];
 
 const NAV_GROUPS: NavGroup[] = [
