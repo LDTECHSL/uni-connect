@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useCallback } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
-import { AssignmentInd, Event, Favorite, Forum, Home, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
-import { getUnreadChatCount } from "../services/chats-api";
+import { AssignmentInd, Event, Favorite, Forum, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
+import { checkChatExists, createChat, getUnreadChatCount } from "../services/chats-api";
+import { getUsers } from "../services/auth-api";
 
 type NavbarProps = {
     children?: React.ReactNode;
@@ -21,6 +22,34 @@ type NavGroup = {
     icon: (props: React.SVGProps<SVGSVGElement>) => React.ReactNode;
     children: NavLeaf[];
 };
+
+type ApiUser = {
+    id?: number;
+    Id?: number;
+    username?: string | null;
+    Username?: string | null;
+};
+
+type NavbarUser = {
+    id: number;
+    username: string;
+};
+
+function safeArrayFromDotNet<T>(value: unknown): T[] {
+    if (Array.isArray(value)) return value as T[];
+    if (value && typeof value === "object" && Array.isArray((value as any).$values)) {
+        return (value as any).$values as T[];
+    }
+    return [];
+}
+
+function normalizeUser(raw: ApiUser): NavbarUser | null {
+    const id = (raw.Id ?? raw.id) as number | undefined;
+    if (!id) return null;
+    const username = (raw.Username ?? raw.username ?? "").toString().trim();
+    if (!username) return { id, username: "Unknown" };
+    return { id, username };
+}
 
 function IconMenu(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -86,11 +115,34 @@ export default function Navbar({ children }: NavbarProps) {
     const [isMobileOpen, setIsMobileOpen] = React.useState(false);
     const [isCollapsed, setIsCollapsed] = React.useState(false);
     const [unreadChatCount, setUnreadChatCount] = React.useState(0);
+    const [users, setUsers] = React.useState<NavbarUser[]>([]);
+    const [userSearch, setUserSearch] = React.useState("");
+    const [userSearchOpen, setUserSearchOpen] = React.useState(false);
+    const [userSearchLoading, setUserSearchLoading] = React.useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
+    const userSearchRef = useRef<HTMLDivElement | null>(null);
+
     const username = sessionStorage.getItem('userName') || 'User';
     const userType = sessionStorage.getItem('userType') || 'User';
+    const token = sessionStorage.getItem('jwtToken') || '';
+    const me = Number(sessionStorage.getItem("userId") || "0");
+
+    const handleGetUsers = async () => {
+        try {
+            setUserSearchLoading(true);
+            const res = await getUsers();
+            const list = safeArrayFromDotNet<ApiUser>(res.data)
+                .map(normalizeUser)
+                .filter((x): x is NavbarUser => x !== null);
+            setUsers(list || []);
+        } catch (error) {
+            setUsers([]);
+        } finally {
+            setUserSearchLoading(false);
+        }
+    }
 
     const handleGetUnreadChatCount = useCallback(async () => {
         try {
@@ -103,6 +155,7 @@ export default function Navbar({ children }: NavbarProps) {
 
     useEffect(() => {
         handleGetUnreadChatCount();
+        handleGetUsers();
     }, []);
 
     // call unread-count on any click (debounced)
@@ -132,13 +185,77 @@ export default function Navbar({ children }: NavbarProps) {
 
     const [openGroups, setOpenGroups] = React.useState<Set<string>>(initialOpenGroups);
 
-    const token = sessionStorage.getItem('jwtToken') || '';
-
     React.useEffect(() => {
         if (!token) {
             navigate("/");
         }
     }, [token]);
+
+    React.useEffect(() => {
+        if (!userSearchOpen) return;
+        const onMouseDown = (e: MouseEvent) => {
+            const target = e.target as Node | null;
+            if (!target) return;
+            if (userSearchRef.current && !userSearchRef.current.contains(target)) {
+                setUserSearchOpen(false);
+            }
+        };
+        window.addEventListener("mousedown", onMouseDown);
+        return () => window.removeEventListener("mousedown", onMouseDown);
+    }, [userSearchOpen]);
+
+    React.useEffect(() => {
+        if (!userSearchOpen) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setUserSearchOpen(false);
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [userSearchOpen]);
+
+    const filteredUsers = React.useMemo(() => {
+        const q = userSearch.trim().toLowerCase();
+        const list = users.filter((u) => u.id !== me);
+        if (!q) return list;
+        return list.filter((u) => u.username.toLowerCase().includes(q));
+    }, [users, userSearch, me]);
+
+    const openChatWithUser = useCallback(
+        async (otherUserId: number, otherUsername: string) => {
+            if (!otherUserId || otherUserId === 0) return;
+            if (!me || me === 0) return;
+            if (!token) return;
+
+            const initialMessage = `Hi ${otherUsername}, can we chat?`;
+
+            try {
+                const res = await checkChatExists(token, me, otherUserId);
+                if (res.data === true) {
+                    navigate("/app/chats", {
+                        state: {
+                            openWithUserId: otherUserId,
+                            initialMessage,
+                        },
+                    });
+                    return;
+                }
+
+                const created = await createChat(token, { user1: me, user2: otherUserId });
+                const conversationId = (created.data?.id ?? created.data?.Id) as number | undefined;
+                navigate("/app/chats", {
+                    state: {
+                        openConversationId: conversationId,
+                        openWithUserId: otherUserId,
+                        initialMessage,
+                    },
+                });
+            } finally {
+                setUserSearchOpen(false);
+                setUserSearch("");
+            }
+        },
+        [me, navigate, token]
+    );
 
     React.useEffect(() => {
         if (!isMobileOpen) return;
@@ -335,6 +452,54 @@ export default function Navbar({ children }: NavbarProps) {
                     >
                         <IconMenu />
                     </button>
+
+                    <div className="appTopbarSearch" ref={userSearchRef}>
+                        <div className="appUserSearchWrap">
+                            <input
+                                className="appSearchInput"
+                                type="search"
+                                placeholder="Search users..."
+                                value={userSearch}
+                                onFocus={() => {
+                                    setUserSearchOpen(true);
+                                    if (users.length === 0 && !userSearchLoading) handleGetUsers();
+                                }}
+                                onChange={(e) => {
+                                    setUserSearch(e.target.value);
+                                    setUserSearchOpen(true);
+                                }}
+                                aria-label="Search users"
+                            />
+
+                            {userSearchOpen && (
+                                <div className="appUserSearchDropdown" role="listbox" aria-label="Users">
+                                    {userSearchLoading && (
+                                        <div className="appUserSearchEmpty">Loading users...</div>
+                                    )}
+
+                                    {!userSearchLoading && filteredUsers.length === 0 && (
+                                        <div className="appUserSearchEmpty">No users found</div>
+                                    )}
+
+                                    {!userSearchLoading && filteredUsers.length > 0 &&
+                                        filteredUsers.map((u) => (
+                                            <button
+                                                key={u.id}
+                                                type="button"
+                                                className="appUserSearchItem"
+                                                role="option"
+                                                onClick={() => openChatWithUser(u.id, u.username)}
+                                            >
+                                                <span className="appUserSearchAvatar" aria-hidden="true">
+                                                    {u.username.charAt(0).toUpperCase()}
+                                                </span>
+                                                <span className="appUserSearchName">{u.username}</span>
+                                            </button>
+                                        ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
                     <div className="appTopbarGrow" />
 
