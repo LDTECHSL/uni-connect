@@ -2,7 +2,16 @@ import React, { useEffect, useRef, useCallback } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import logo from "../assets/uni-connect-sm.png";
-import { AssignmentInd, Event, Favorite, Forum, PostAdd, PowerSettingsNew, Storefront } from "@mui/icons-material";
+import {
+    AssignmentInd,
+    Event,
+    Favorite,
+    Forum,
+    Notifications,
+    PostAdd,
+    PowerSettingsNew,
+    Storefront,
+} from "@mui/icons-material";
 import { checkChatExists, createChat, getUnreadChatCount } from "../services/chats-api";
 import { getUsers } from "../services/auth-api";
 
@@ -507,6 +516,24 @@ export default function Navbar({ children }: NavbarProps) {
                     </div>
 
                     <div className="appTopbarGrow" />
+
+                    <NavLink
+                        to="/app/chats"
+                        className="appIconBtn appTopbarNotifBtn"
+                        aria-label={
+                            unreadChatCount > 0
+                                ? `${unreadChatCount} unread chats`
+                                : "Notifications"
+                        }
+                        title="Unread chats"
+                    >
+                        <Notifications />
+                        {unreadChatCount > 0 ? (
+                            <span className="appTopbarNotifBadge" aria-hidden="true">
+                                {unreadChatCount > 99 ? "99+" : unreadChatCount}
+                            </span>
+                        ) : null}
+                    </NavLink>
 
                     <button type="button" className="appTopbarAvatarBtn" aria-label="Account">
                         <div className="appAvatar" aria-hidden="true">
