@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPost, deletePost, getAllPosts, getPostsByUser, savePost } from "../services/post-api";
+import { createPost, deletePost, getPostsByUser } from "../services/post-api";
 import "../styles/posts.css";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { showError, showSuccess } from "../components/Toast";
-
-type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
 type ApiByteArray = string | number[];
 
@@ -70,29 +68,10 @@ function formatDate(value: string): string {
     return date.toLocaleString();
 }
 
-function readSavedIds(): number[] {
-    try {
-        const raw = localStorage.getItem("uni-connect:savedPostIds");
-        if (!raw) return [];
-        const parsed = JSON.parse(raw) as JsonValue;
-        if (!Array.isArray(parsed)) return [];
-        return parsed
-            .map((x) => (typeof x === "number" ? x : Number.NaN))
-            .filter((x) => Number.isFinite(x));
-    } catch {
-        return [];
-    }
-}
-
-function writeSavedIds(ids: number[]) {
-    localStorage.setItem("uni-connect:savedPostIds", JSON.stringify(ids));
-}
-
 export default function MyPosts() {
     const [posts, setPosts] = useState<PostResponse[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [savedIds, setSavedIds] = useState<number[]>(() => readSavedIds());
     const [expandedCaptionIds, setExpandedCaptionIds] = useState<number[]>([]);
     const [filterOpen, setFilterOpen] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState<"announcement" | "notes" | "events" | null>(null);
@@ -130,7 +109,6 @@ export default function MyPosts() {
         handleGetMyPosts();
     }, []);
 
-    const savedSet = useMemo(() => new Set(savedIds), [savedIds]);
     const expandedSet = useMemo(() => new Set(expandedCaptionIds), [expandedCaptionIds]);
 
     const visiblePosts = useMemo(() => {
@@ -158,14 +136,6 @@ export default function MyPosts() {
         window.addEventListener("mousedown", onMouseDown);
         return () => window.removeEventListener("mousedown", onMouseDown);
     }, [filterOpen]);
-
-    const toggleSave = (postId: number) => {
-        setSavedIds((prev) => {
-            const next = prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId];
-            writeSavedIds(next);
-            return next;
-        });
-    };
 
     const toggleCaption = (postId: number) => {
         setExpandedCaptionIds((prev) => (prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]));
