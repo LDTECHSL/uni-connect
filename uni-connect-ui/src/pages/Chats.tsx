@@ -49,9 +49,27 @@ export default function Chats() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [draft, setDraft] = useState("");
     const [attachments, setAttachments] = useState<File[]>([]);
+    const [attachmentPreviews, setAttachmentPreviews] = useState<
+        { file: File; url: string | null }[]
+    >([]);
 
     const token = sessionStorage.getItem('jwtToken') || '';
     const userId = sessionStorage.getItem("userId") || "";
+
+    useEffect(() => {
+        const previews = attachments.map((file) => ({
+            file,
+            url: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+        }));
+
+        setAttachmentPreviews(previews);
+
+        return () => {
+            for (const p of previews) {
+                if (p.url) URL.revokeObjectURL(p.url);
+            }
+        };
+    }, [attachments]);
 
     const fetchChats = async () => {
         try {
@@ -363,16 +381,17 @@ export default function Chats() {
                             </div>
 
                             <form className="chatComposer" onSubmit={handleSend}>
-                                <label className="attachBtn" title="Attach image">
+                                <label className="attachBtn" title="Attach file">
                                     📎
                                     <input
                                         type="file"
                                         multiple
-                                        accept="image/*"
                                         className="attachInput"
                                         onChange={(e) => {
-                                            const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith("image/"));
+                                            const files = Array.from(e.target.files || []);
                                             setAttachments(files);
+                                            // allow re-selecting the same file(s)
+                                            e.currentTarget.value = "";
                                         }}
                                     />
                                 </label>
@@ -386,6 +405,37 @@ export default function Chats() {
                                     Send
                                 </button>
                             </form>
+
+                            {attachmentPreviews.length > 0 ? (
+                                <div className="chatAttachPreview" aria-label="Attachments">
+                                    {attachmentPreviews.map((p, idx) => (
+                                        <div key={`${p.file.name}-${p.file.size}-${idx}`} className="chatAttachItem">
+                                            {p.url ? (
+                                                <img src={p.url} alt={p.file.name} />
+                                            ) : (
+                                                <div className="chatAttachFile" title={p.file.name}>
+                                                    <div className="chatAttachFileExt">
+                                                        {(p.file.name.split(".").pop() || "FILE").toUpperCase()}
+                                                    </div>
+                                                    <div className="chatAttachFileName">{p.file.name}</div>
+                                                </div>
+                                            )}
+
+                                            <button
+                                                type="button"
+                                                className="chatAttachRemove"
+                                                aria-label={`Remove ${p.file.name}`}
+                                                title="Remove"
+                                                onClick={() =>
+                                                    setAttachments((prev) => prev.filter((_, i) => i !== idx))
+                                                }
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : null}
                         </div>
                     )}
                 </main>
