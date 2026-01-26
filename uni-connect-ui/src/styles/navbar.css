@@ -343,13 +343,13 @@
 .appUserSearchAvatar {
 	width: 28px;
 	height: 28px;
-	border-radius: 10px;
+	border-radius: 50px;
 	border: 1px solid #0a0a0a;
-	background: rgba(249, 115, 22),0.68;
+	background: rgba(249, 115, 22, 0.68);
 	display: inline-grid;
 	place-items: center;
 	font-weight: 800;
-	color: #0a0a0a;
+	color: #ffffff;
 }
 
 .appUserSearchName {

@@ -522,10 +522,10 @@ export default function Navbar({ children }: NavbarProps) {
                         className="appIconBtn appTopbarNotifBtn"
                         aria-label={
                             unreadChatCount > 0
-                                ? `${unreadChatCount} unread chats`
+                                ? `${unreadChatCount} unread notifications`
                                 : "Notifications"
                         }
-                        title="Unread chats"
+                        title="Notifications"
                     >
                         <Notifications />
                         {unreadChatCount > 0 ? (
