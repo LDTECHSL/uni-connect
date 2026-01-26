@@ -320,7 +320,10 @@ export default function Chats() {
 
                 <main className="chatPane" aria-label="Chat pane">
                     {activeId === null ? (
-                        <div className="chatPlaceholder">Please click a chat to open</div>
+                        <div className="chatPlaceholder">
+                            
+                            Please click a chat to open
+                            </div>
                     ) : (
                         <div className="chatWindow">
                             <div className="chatHeader">
