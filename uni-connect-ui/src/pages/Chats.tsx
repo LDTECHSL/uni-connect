@@ -386,10 +386,22 @@ export default function Chats() {
                                     <input
                                         type="file"
                                         multiple
+                                        accept="image/jpeg,image/png,.jpg,.jpeg,.png"
                                         className="attachInput"
                                         onChange={(e) => {
-                                            const files = Array.from(e.target.files || []);
-                                            setAttachments(files);
+                                            const picked = Array.from(e.target.files || []);
+                                            const allowed = picked.filter((f) => {
+                                                const t = (f.type || "").toLowerCase();
+                                                if (t === "image/jpeg" || t === "image/png") return true;
+                                                const name = (f.name || "").toLowerCase();
+                                                return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png");
+                                            });
+
+                                            if (allowed.length !== picked.length) {
+                                                showError("Only JPG/JPEG/PNG images are allowed");
+                                            }
+
+                                            setAttachments(allowed);
                                             // allow re-selecting the same file(s)
                                             e.currentTarget.value = "";
                                         }}
