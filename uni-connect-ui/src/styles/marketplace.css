@@ -573,6 +573,19 @@
 	font-size: 0.875rem;
 	font-family: inherit;
 	transition: border-color 0.2s;
+	color: #000000;
+	background-color: #ffffff;
+}
+
+/* Remove number input spinners */
+.formInput[type="number"] {
+	-moz-appearance: textfield; /* Firefox */
+}
+
+.formInput[type="number"]::-webkit-outer-spin-button,
+.formInput[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 .formInput:focus {
@@ -594,6 +607,8 @@
 	font-family: inherit;
 	resize: vertical;
 	transition: border-color 0.2s;
+	color: #000000;
+	background-color: #ffffff;
 }
 
 .formTextarea:focus {
@@ -709,6 +724,7 @@
 
 .cancelButton:hover {
 	background: #0a0a0a;
+	color: white;
 }
 
 .cancelButton:disabled {
