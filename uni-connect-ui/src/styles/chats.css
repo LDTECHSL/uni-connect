@@ -283,6 +283,79 @@
   border-radius: 10px;
   margin-top: 6px;
   border: 1px solid #e7e9f0;
+  cursor: zoom-in;
+}
+
+/* Image viewer modal */
+.chatImageModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.chatImageModal {
+  width: min(1100px, 96vw);
+  height: min(800px, 92vh);
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.55);
+}
+
+.chatImageModalToolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.chatImageModalBtn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #000000;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 34px;
+  text-align: center;
+}
+
+.chatImageModalBtnClose {
+  margin-left: auto;
+}
+
+.chatImageModalZoom {
+  color: #000000;
+  font-weight: 800;
+  min-width: 70px;
+  text-align: center;
+}
+
+.chatImageModalBody {
+  overflow: auto;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.chatImageModalImg {
+  display: block;
+  max-width: none;
+  height: auto;
+  border-radius: 12px;
+  margin: 0 auto;
+  user-select: none;
 }
 
 .chatPdf {

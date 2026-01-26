@@ -53,6 +53,13 @@ export default function Chats() {
         { file: File; url: string | null }[]
     >([]);
 
+    const [imageViewer, setImageViewer] = useState<{
+        open: boolean;
+        src: string;
+        alt: string;
+        zoom: number;
+    }>({ open: false, src: "", alt: "", zoom: 100 });
+
     const token = sessionStorage.getItem('jwtToken') || '';
     const userId = sessionStorage.getItem("userId") || "";
 
@@ -70,6 +77,23 @@ export default function Chats() {
             }
         };
     }, [attachments]);
+
+    useEffect(() => {
+        if (!imageViewer.open) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setImageViewer({ open: false, src: "", alt: "", zoom: 100 });
+            }
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [imageViewer.open]);
+
+    const openImageViewer = (src: string, alt: string) => {
+        setImageViewer({ open: true, src, alt, zoom: 100 });
+    };
+
+    const clampZoom = (value: number) => Math.max(50, Math.min(400, value));
 
     const fetchChats = async () => {
         try {
@@ -246,7 +270,20 @@ export default function Chats() {
             url = URL.createObjectURL(blob);
         }
 
-        return <img src={url} alt={file.fileName || "attachment"} className="chatImg" />;
+        const alt = file.fileName || "attachment";
+
+        return (
+            <img
+                src={url}
+                alt={alt}
+                className="chatImg"
+                onClick={(e) => {
+                    const src = (e.currentTarget as HTMLImageElement).src;
+                    openImageViewer(src, alt);
+                }}
+                role="button"
+            />
+        );
     }
 
     async function handleSend(e: React.FormEvent) {
@@ -275,6 +312,73 @@ export default function Chats() {
 
     return (
         <div className="chatsPage">
+            {imageViewer.open ? (
+                <div
+                    className="chatImageModalOverlay"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Image viewer"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setImageViewer({ open: false, src: "", alt: "", zoom: 100 });
+                        }
+                    }}
+                >
+                    <div className="chatImageModal">
+                        <div className="chatImageModalToolbar">
+                            <button
+                                type="button"
+                                className="chatImageModalBtn"
+                                onClick={() =>
+                                    setImageViewer((v) => ({ ...v, zoom: clampZoom(v.zoom - 25) }))
+                                }
+                                aria-label="Zoom out"
+                            >
+                                −
+                            </button>
+                            <div className="chatImageModalZoom" aria-label="Zoom level">
+                                {imageViewer.zoom}%
+                            </div>
+                            <button
+                                type="button"
+                                className="chatImageModalBtn"
+                                onClick={() =>
+                                    setImageViewer((v) => ({ ...v, zoom: clampZoom(v.zoom + 25) }))
+                                }
+                                aria-label="Zoom in"
+                            >
+                                +
+                            </button>
+                            <button
+                                type="button"
+                                className="chatImageModalBtn chatImageModalBtnClose"
+                                onClick={() => setImageViewer({ open: false, src: "", alt: "", zoom: 100 })}
+                                aria-label="Close"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div
+                            className="chatImageModalBody"
+                            onWheel={(e) => {
+                                e.preventDefault();
+                                const delta = e.deltaY < 0 ? 25 : -25;
+                                setImageViewer((v) => ({ ...v, zoom: clampZoom(v.zoom + delta) }));
+                            }}
+                        >
+                            <img
+                                className="chatImageModalImg"
+                                src={imageViewer.src}
+                                alt={imageViewer.alt}
+                                style={{ width: `${imageViewer.zoom}%` }}
+                                draggable={false}
+                            />
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+
             <div className="postsHeader">
                 <h2 className="postsTitle">Chats</h2>
             </div>
