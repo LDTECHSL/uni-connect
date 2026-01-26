@@ -90,10 +90,10 @@
 .chatsSearch {
   width: 100%;
   padding: 12px 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-size: var(--text-base);
+  border-radius: 15px;
+  border: 1px solid #0a0a0a;
+  background: #fffaf3;
+  font-size: 1rem;
   box-shadow: none;
 }
 
@@ -106,9 +106,9 @@
 }
 
 .chatsList {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  background: #fffaf3;
+  border: 1px solid #0a0a0a;
+  border-radius: 15px;
   padding: 8px;
   overflow: auto;
   min-height: 0;
@@ -121,18 +121,18 @@
   width: 100%;
   text-align: left;
   padding: 10px;
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   background: transparent;
   border: none;
 }
 
 .chatItem:hover {
-  background: var(--brand-soft);
+  background: rgba(249, 115, 22),0.68;
 }
 
 .chatItem.active {
-  background: var(--brand);
-  color: var(--brand-contrast);
+  background: #f97316;
+  color: #0a0a0a;
 }
 
 .chatAvatar {
@@ -142,7 +142,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--border);
+  background: #0a0a0a;
   font-weight: 700;
 }
 
@@ -156,14 +156,14 @@
 }
 
 .chatLast {
-  color: var(--muted);
-  font-size: var(--text-sm);
+  color: #b6a89f;
+  font-size: 0.875rem;
 }
 
 .chatPane {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  background: #fffaf3;
+  border: 1px solid #0a0a0a;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -174,7 +174,7 @@
 
 .chatHeader {
   padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #0a0a0a;
   font-weight: 700;
   background: linear-gradient(180deg, #fff, #fafafa);
 }
@@ -212,7 +212,7 @@
 }
 
 .chatMsg.right .chatMsgBubble {
-  background: var(--brand);
+  background: #f97316;
 }
 
 .chatMsgText {
@@ -230,7 +230,7 @@
   display: flex;
   gap: 10px;
   padding: 12px 14px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #0a0a0a;
   background: #fff;
 }
 
@@ -246,7 +246,7 @@
   padding: 10px 18px;
   border: none;
   border-radius: 10px;
-  background: var(--brand);
+  background: #f97316;
   color: #fff;
   cursor: pointer;
 }

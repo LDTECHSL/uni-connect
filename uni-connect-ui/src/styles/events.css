@@ -8,5 +8,5 @@
 /* Show the whole thumbnail instead of cropping */
 .eventsPage .itemImage {
 	object-fit: contain;
-	background: var(--surface);
+	background: #fffaf3;
 }

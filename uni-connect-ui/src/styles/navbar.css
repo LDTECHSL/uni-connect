@@ -1,12 +1,8 @@
-/* App layout (sidebar + topbar + content)
-   Uses existing theme CSS variables from src/index.css
-*/
-
 .appFrame {
 	min-height: 100vh;
 	display: flex;
 	background-color: rgb(222, 222, 223);
-	color: var(--fg);
+	color: #0a0a0a;
 }
 
 /* Sidebar */
@@ -16,8 +12,8 @@
 	height: 100vh;
 	width: 280px;
 	flex: 0 0 280px;
-	border-right: 1px solid var(--border);
-	/* background: color-mix(in srgb, var(--fg) 6%, var(--surface)); */
+	border-right: 1px solid #0a0a0a;
+	/* background: color-mix(in srgb, #0a0a0a 6%, #fffaf3); */
     background-color: white;
 	display: flex;
 	flex-direction: column;
@@ -44,7 +40,7 @@
 	justify-content: space-between;
 	gap: 10px;
 	padding: 14px 12px;
-	/* border-bottom: 1px solid var(--border); */
+	/* border-bottom: 1px solid #0a0a0a; */
 }
 
 .appLogoBtn {
@@ -65,8 +61,8 @@
 	width: 150px;
 	height: auto;
 	border-radius: 10px;
-	/* border: 1px solid var(--border); */
-	/* background: color-mix(in srgb, var(--bg) 88%, transparent); */
+	/* border: 1px solid #0a0a0a; */
+	/* background: color-mix(in srgb, #f0f0f071 88%, transparent); */
 	object-fit: contain;
 }
 
@@ -84,7 +80,7 @@
 	width: 36px;
 	height: 36px;
 	border-radius: 10px;
-	border: 1px solid var(--border);
+	border: 1px solid #0a0a0a;
 	background: transparent;
 	color: #0a0a0a !important;
 }
@@ -116,8 +112,8 @@
 }
 
 .appNavLinkActive {
-	border-color: var(--border);
-	background: var(--brand);
+	border-color: #0a0a0a;
+	background: #f97316;
 	color: white;
 }
 
@@ -163,13 +159,13 @@
 }
 
 .appNavGroupBtn:hover {
-	background: var(--bg-88);
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	background: rgba(237, 235, 235, 0.88);
+	background: color-mix(in srgb, #f0f0f071 88%, transparent);
 }
 
 .appNavGroupBtnActive {
-	border-color: var(--border);
-	background: var(--brand-soft);
+	border-color: #0a0a0a;
+	background: rgba(249, 115, 22),0.68;
 }
 
 .appNavChevron {
@@ -207,37 +203,37 @@
 	padding: 0 10px;
 	border-radius: 12px;
 	text-decoration: none;
-	color: var(--fg-92);
-	color: color-mix(in srgb, var(--fg) 92%, transparent);
+	color: rgba(10, 10, 10, 0.92);
+	color: color-mix(in srgb, #0a0a0a 92%, transparent);
 	border: 1px solid transparent;
 }
 
 .appNavChild:hover {
-	background: var(--bg-88);
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	background: rgba(237, 235, 235, 0.88);
+	background: color-mix(in srgb, #f0f0f071 88%, transparent);
 	text-decoration: none;
 }
 
 .appNavChildActive {
-	border-color: var(--border);
-	background: var(--brand-10);
-	background: color-mix(in srgb, var(--brand) 10%, transparent);
+	border-color: #0a0a0a;
+	background: rgba(249, 115, 22, 0.1);
+	background: color-mix(in srgb, #f97316 10%, transparent);
 }
 
 .appNavChildDot {
 	width: 6px;
 	height: 6px;
 	border-radius: 999px;
-	background: var(--muted-60);
-	background: color-mix(in srgb, var(--muted) 60%, transparent);
+	background: rgba(182, 168, 159, 0.6);
+	background: color-mix(in srgb, #b6a89f 60%, transparent);
 }
 
 .appNavChildActive .appNavChildDot {
-	background: var(--brand);
+	background: #f97316;
 }
 
 .appNavChildLabel {
-	font-size: var(--text-sm);
+	font-size: 0.875rem;
 	font-weight: 650;
 	white-space: nowrap;
 	overflow: hidden;
@@ -294,7 +290,7 @@
 	align-items: center;
 	gap: 12px;
 	padding: 0 14px;
-	border-bottom: 1px solid var(--border);
+	border-bottom: 1px solid #0a0a0a;
 	background-color: white;
 }
 
@@ -316,7 +312,7 @@
 	left: 0;
 	right: 0;
 	background: white;
-	border: 1px solid var(--border);
+	border: 1px solid #0a0a0a;
 	border-radius: 12px;
 	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 	overflow: auto;
@@ -340,25 +336,25 @@
 }
 
 .appUserSearchItem:hover {
-	background: var(--bg-88);
-	background: color-mix(in srgb, var(--bg) 88%, transparent);
+	background: rgba(237, 235, 235, 0.88);
+	background: color-mix(in srgb, #f0f0f071 88%, transparent);
 }
 
 .appUserSearchAvatar {
 	width: 28px;
 	height: 28px;
 	border-radius: 10px;
-	border: 1px solid var(--border);
-	background: var(--brand-soft);
+	border: 1px solid #0a0a0a;
+	background: rgba(249, 115, 22),0.68;
 	display: inline-grid;
 	place-items: center;
 	font-weight: 800;
-	color: var(--fg);
+	color: #0a0a0a;
 }
 
 .appUserSearchName {
 	font-weight: 700;
-	color: var(--fg);
+	color: #0a0a0a;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -366,24 +362,24 @@
 
 .appUserSearchEmpty {
 	padding: 12px 10px;
-	color: var(--muted);
-	font-size: var(--text-sm);
+	color: #b6a89f;
+	font-size: 0.875rem;
 }
 
 .appSearchInput {
 	width: 100%;
 	height: 38px;
 	border-radius: 999px;
-	border: 1px solid var(--border);
-	background: var(--bg-92);
-	background: color-mix(in srgb, var(--bg) 92%, transparent);
+	border: 1px solid #0a0a0a;
+	background: rgba(237, 235, 235, 0.92);
+	background: color-mix(in srgb, #f0f0f071 92%, transparent);
 	padding: 0 14px;
 	outline: none;
 }
 
 .appSearchInput::placeholder {
-	color: var(--muted-85);
-	color: color-mix(in srgb, var(--muted) 85%, transparent);
+	color: rgba(107, 94, 85, 0.85);
+	color: color-mix(in srgb, #b6a89f 85%, transparent);
 }
 
 .appTopbarAvatarBtn {
@@ -436,7 +432,7 @@
 .appSidebarFooter {
 	margin-top: auto;
 	padding: 12px;
-	border-top: 1px solid var(--border);
+	border-top: 1px solid #0a0a0a;
 	display: grid;
 	grid-template-columns: 1fr auto;
 	align-items: center;
@@ -466,8 +462,8 @@
 	width: 40px;
 	height: 40px;
 	border-radius: 999px;
-	border: 1px solid var(--border);
-	background: var(--brand);
+	border: 1px solid #0a0a0a;
+	background: #f97316;
 	display: grid;
 	place-items: center;
 }
@@ -491,8 +487,8 @@
 }
 
 .appUserRole {
-	font-size: var(--text-xs);
-	color: var(--muted);
+	font-size: 0.75rem;
+	color: #b6a89f;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -511,9 +507,9 @@
 .appPage {
 	max-width: 1100px;
 	margin: 0 auto;
-	border: 1px solid var(--border);
-	border-radius: var(--radius-md);
-	background: var(--surface);
+	border: 1px solid #0a0a0a;
+	border-radius: 15px;
+	background: #fffaf3;
 	padding: 16px;
 }
 
@@ -526,8 +522,8 @@
 
 .appPageSub {
 	margin: 8px 0 0;
-	color: var(--muted);
-	font-size: var(--text-sm);
+	color: #b6a89f;
+	font-size: 0.875rem;
 }
 
 /* Mobile/off-canvas */
@@ -588,8 +584,8 @@
 		left: 0;
 		top: 0;
 		transform: translateX(-102%);
-		box-shadow: 0 28px 80px var(--fg-22);
-		box-shadow: 0 28px 80px color-mix(in srgb, var(--fg) 22%, transparent);
+		box-shadow: 0 28px 80px rgba(10, 10, 10, 0.22);
+		box-shadow: 0 28px 80px color-mix(in srgb, #0a0a0a 22%, transparent);
 	}
 
 	.appSidebarMobileOpen {
@@ -599,8 +595,8 @@
 	.appOverlay {
 		position: fixed;
 		inset: 0;
-		background: var(--fg-38);
-		background: color-mix(in srgb, var(--fg) 38%, transparent);
+		background: rgba(10, 10, 10, 0.38);
+		background: color-mix(in srgb, #0a0a0a 38%, transparent);
 		display: block;
 		opacity: 0;
 		pointer-events: none;

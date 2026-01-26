@@ -27,9 +27,9 @@
 	right: 0;
 	top: calc(100% + 8px);
 	min-width: 220px;
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: var(--radius-md);
+	background: #fffaf3;
+	border: 1px solid #0a0a0a;
+	border-radius: 15px;
 	overflow: hidden;
 	z-index: 20;
 }
@@ -43,16 +43,16 @@
 }
 
 .postsFilterItem:hover {
-	background: var(--brand-soft);
+	background: rgba(249, 115, 22),0.68;
 }
 
 .postsCreateButton {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	border: 1px solid var(--border);
-	background: var(--brand);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	background: #f97316;
+	border-radius: 10px;
 	color: white;
 	padding: 8px 12px;
 }
@@ -63,16 +63,16 @@
 }
 
 .postsButton {
-	border: 1px solid var(--border);
-	background: var(--surface);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	background: #fffaf3;
+	border-radius: 10px;
 	padding: 8px 12px;
 }
 
 .postsCard {
 	background-color: white;
-	border: 1px solid var(--border);
-	border-radius: var(--radius-md);
+	border: 1px solid #0a0a0a;
+	border-radius: 15px;
 	padding: 16px;
 }
 
@@ -85,8 +85,8 @@
 }
 
 .postsMuted {
-	color: var(--muted);
-	font-size: var(--text-sm);
+	color: #b6a89f;
+	font-size: 0.875rem;
 }
 
 .postsList {
@@ -119,24 +119,24 @@
 }
 
 .saveBtn {
-	border: 1px solid var(--border);
-	background: var(--surface);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	background: #fffaf3;
+	border-radius: 10px;
 	padding: 8px 12px;
 	white-space: nowrap;
 }
 
 .deleteBtn {
-	border: 1px solid var(--border);
+	border: 1px solid #0a0a0a;
 	background-color: #ad0407;
 	color: white;
-	border-radius: var(--radius-sm);
+	border-radius: 10px;
 	padding: 8px 12px;
 	white-space: nowrap;
 }
 
 .saveBtnSaved {
-	background: var(--brand-soft);
+	background: rgba(249, 115, 22),0.68;
 }
 
 .categoryRow {
@@ -146,10 +146,10 @@
 .categoryPill {
 	display: inline-block;
 	padding: 4px 0;
-	font-size: var(--text-sm);
+	font-size: 0.875rem;
 	font-style: italic;
 	font-weight: 600;
-	color: var(--brand);
+	color: #f97316;
 }
 
 .captionRow {
@@ -166,8 +166,8 @@
 	border: none;
 	background: transparent;
 	padding: 0;
-	color: var(--brand);
-	font-size: var(--text-sm);
+	color: #f97316;
+	font-size: 0.875rem;
 }
 
 .imagesGrid {
@@ -193,32 +193,32 @@
 	width: 100%;
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
-	border-radius: var(--radius-sm);
-	border: 1px solid var(--border);
+	border-radius: 10px;
+	border: 1px solid #0a0a0a;
 	display: block;
 }
 
 .extraOverlay {
 	position: absolute;
 	inset: 0;
-	border-radius: var(--radius-sm);
-	border: 1px solid var(--border);
-	background: var(--fg-45);
-	background: color-mix(in srgb, var(--fg) 45%, transparent);
+	border-radius: 10px;
+	border: 1px solid #0a0a0a;
+	background: rgba(10, 10, 10, 0.45);
+	background: color-mix(in srgb, #0a0a0a 45%, transparent);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-weight: 700;
-	font-size: var(--text-xl);
-	color: var(--surface);
+	font-size: 1.25rem;
+	color: #fffaf3;
 }
 
 /* Modal */
 .modalBackdrop {
 	position: fixed;
 	inset: 0;
-	background: var(--fg-70);
-	background: color-mix(in srgb, var(--fg) 70%, transparent);
+	background: rgba(10, 10, 10, 0.7);
+	background: color-mix(in srgb, #0a0a0a 70%, transparent);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -230,9 +230,9 @@
 	width: min(980px, 100%);
 	height: min(86vh, 900px);
 	max-height: min(86vh, 900px);
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: var(--radius-md);
+	background: #fffaf3;
+	border: 1px solid #0a0a0a;
+	border-radius: 15px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -243,8 +243,8 @@
 	width: min(720px, 100%);
 	max-height: min(86vh, 900px);
 	background-color: white;
-	border: 1px solid var(--border);
-	border-radius: var(--radius-md);
+	border: 1px solid #0a0a0a;
+	border-radius: 15px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -264,15 +264,15 @@
 }
 
 .createLabel {
-	font-size: var(--text-sm);
-	color: var(--muted);
+	font-size: 0.875rem;
+	color: #b6a89f;
 }
 
 .createSelect,
 .createTextarea {
 	width: 100%;
-	border: 1px solid var(--border);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	border-radius: 10px;
 	padding: 10px 12px;
 }
 
@@ -286,8 +286,8 @@
 }
 
 .createHint {
-	font-size: var(--text-sm);
-	color: var(--muted);
+	font-size: 0.875rem;
+	color: #b6a89f;
 }
 
 .createPreviewGrid {
@@ -301,15 +301,15 @@
 	padding: 0;
 	background: transparent;
 	position: relative;
-	border-radius: var(--radius-sm);
+	border-radius: 10px;
 }
 
 .createPreviewImg {
 	width: 100%;
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
-	border-radius: var(--radius-sm);
-	border: 1px solid var(--border);
+	border-radius: 10px;
+	border: 1px solid #0a0a0a;
 	display: block;
 }
 
@@ -317,9 +317,9 @@
 	position: absolute;
 	top: 6px;
 	right: 6px;
-	border: 1px solid var(--border);
-	background: var(--surface-85);
-	background: color-mix(in srgb, var(--surface) 85%, transparent);
+	border: 1px solid #0a0a0a;
+	background: rgba(255, 250, 243, 0.85);
+	background: color-mix(in srgb, #fffaf3 85%, transparent);
 	border-radius: 999px;
 	width: 28px;
 	height: 28px;
@@ -334,7 +334,7 @@
 	justify-content: flex-end;
 	gap: 8px;
 	padding: 12px;
-	border-top: 1px solid var(--border);
+	border-top: 1px solid #0a0a0a;
 }
 
 .modalHeader {
@@ -343,13 +343,13 @@
 	justify-content: space-between;
 	gap: 12px;
 	padding: 12px;
-	border-bottom: 1px solid var(--border);
+	border-bottom: 1px solid #0a0a0a;
 }
 
 .modalClose {
-	border: 1px solid var(--border);
-	background: var(--surface);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	background: #fffaf3;
+	border-radius: 10px;
 	padding: 6px 10px;
 }
 
@@ -368,9 +368,9 @@
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
-	border-radius: var(--radius-sm);
-	border: 1px solid var(--border);
-	background: var(--bg);
+	border-radius: 10px;
+	border: 1px solid #0a0a0a;
+	background: #f0f0f071;
 	display: block;
 }
 
@@ -378,10 +378,10 @@
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	border: 1px solid var(--border);
-	background: var(--surface-85);
-	background: color-mix(in srgb, var(--surface) 85%, transparent);
-	border-radius: var(--radius-sm);
+	border: 1px solid #0a0a0a;
+	background: rgba(255, 250, 243, 0.85);
+	background: color-mix(in srgb, #fffaf3 85%, transparent);
+	border-radius: 10px;
 	padding: 10px 12px;
 }
 
